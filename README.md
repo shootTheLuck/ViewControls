@@ -1,6 +1,6 @@
 # View-Controls
 
-Alternative camera controls for THREE.js based on the "Object View" controls found in at least one popular online MMO.
+Camera controls for THREE.js based on the view controls of a popular online MMO.
     
 ## How do I use it?
 ```javascript

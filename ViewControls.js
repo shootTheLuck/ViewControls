@@ -234,6 +234,12 @@ class ViewControls extends THREE.Object3D {
 	}
 
 	handleKeyDown( evt ) {
+		
+		if ( evt.key === "Alt" ) {
+			
+			evt.preventDefault();
+			
+		}
 
 		if ( evt.key === "Escape" ) {
 

@@ -222,7 +222,7 @@ class ViewControls extends THREE.Object3D {
         this.focusIncrement += this.focusSpeed;
         this.focusIterations += 1;
         var d = THREE.Vector3.prototype.manhattanDistanceTo.call( this, camera.quaternion, this.focusQuaternion );
-        if ( d < distanceTolerance || this.focusIterations > this.maxFocusIterations ) {
+        if ( d < this.distanceTolerance || this.focusIterations > this.maxFocusIterations ) {
 
             this.focused = true;
             this.focusIncrement = 0;

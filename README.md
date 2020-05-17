@@ -23,8 +23,8 @@ orbit over or under the object.  Mouse left and right remain as before. <br>
 
 Pressing the <kbd>Esc</kbd> key returns the camera to its original position and rotation.
 
-
 ***\*\*\*Important Note\*\*\****
+    
 On at least some operating systems (Lubuntu for instance), using the <kbd>Alt</kbd> key with mouse drag<br>
 is reserved for moving windows across the screen. 
 

@@ -25,7 +25,7 @@ Pressing the <kbd>Esc</kbd> key returns the camera to its original position and 
 
 ***Important Note***
 On at least some operating systems (Lubuntu for instance), using the <kbd>Alt</kbd> key with mouse drag<br>
-is reserved for moving window across the screen. 
+is reserved for moving windows across the screen. 
 
 This can be disabled (in Lubuntu at least) by editing ~/.config/openbox/lubuntu-rc.xml <br>
 and commenting-out items under the line \<context name="Frame"\> that begin with \<mousebind button="A... <br>

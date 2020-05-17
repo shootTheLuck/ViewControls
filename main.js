@@ -1,5 +1,5 @@
 
-import ViewControls from "../js/mjs/ViewControls.js";
+import ViewControls from "./ViewControls.js";
 import ModalWindow from "https://shoottheluck.github.io/Modal-Window/ModalWindow.js";
 
 var camera, scene, renderer, controls;

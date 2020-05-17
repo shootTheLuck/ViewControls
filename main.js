@@ -1,5 +1,6 @@
 
-import ViewControls from "./ViewControls.js";
+import ViewControls from "../js/mjs/ViewControls.js";
+import ModalWindow from "https://shoottheluck.github.io/Modal-Window/ModalWindow.js";
 
 var camera, scene, renderer, controls;
 
@@ -26,7 +27,7 @@ function init() {
     directionalLight.position.set(10,10,10);
     scene.add(directionalLight);
 
-    var grassTexture = new THREE.TextureLoader().load("./grass.jpg");
+    var grassTexture = new THREE.TextureLoader().load("./textures/grass.jpg");
     grassTexture.wrapS = THREE.RepeatWrapping;
     grassTexture.wrapT = THREE.RepeatWrapping;
     grassTexture.repeat.set(15, 15);
@@ -40,7 +41,7 @@ function init() {
     floor.position.set( 0, 0, 0 );
     scene.add( floor );
 
-    var wallTexture = new THREE.TextureLoader().load("./01murocrep512.jpg");
+    var wallTexture = new THREE.TextureLoader().load("./textures/01murocrep512.jpg");
     var boxGeometry = new THREE.BoxGeometry(2,2,2 );
     var boxMaterial = new THREE.MeshStandardMaterial({color: 0xeeeeee, map: wallTexture});
 
@@ -87,7 +88,7 @@ function init() {
     Sign.prototype = Object.create(THREE.Mesh.prototype);
     Sign.prototype.constructor = Sign;
 
-    var instructionsJustAlt = new THREE.TextureLoader().load( "instructionsJustAlt.png" );
+    var instructionsJustAlt = new THREE.TextureLoader().load( "./textures/instructionsJustAlt.png" );
     var sign = new Sign(instructionsJustAlt);
     scene.add(sign);
     sign.position.set(0, 1, 6);
@@ -103,7 +104,7 @@ function init() {
     sign2.position.set(0, 1, -6);
     sign2.rotation.y = Math.PI;
 
-    var instructionsLookUp = new THREE.TextureLoader().load( "instructionsLookUp.png" );
+    var instructionsLookUp = new THREE.TextureLoader().load( "./textures/instructionsLookUp.png" );
     var sign3 = new Sign(instructionsLookUp);
     scene.add(sign3);
     sign3.position.set(6, 1, 0);
@@ -114,13 +115,13 @@ function init() {
     pointLight2.position.set(-6.5, 3.4, 0);
     scene.add(pointLight2);
 
-    var instructionsEscape = new THREE.TextureLoader().load( "instructionsEscape.png" );
+    var instructionsEscape = new THREE.TextureLoader().load( "./textures/instructionsEscape.png" );
     var sign4 = new Sign(instructionsEscape);
     scene.add(sign4);
     sign4.position.set(-6, 1, 0);
     sign4.rotation.y = -Math.PI/2;
 
-    var instructionsHaveYouSeen = new THREE.TextureLoader().load( "instructionsHaveYouSeen.png" );
+    var instructionsHaveYouSeen = new THREE.TextureLoader().load( "./textures/instructionsHaveYouSeen.png" );
     var sign5 = new Sign(instructionsHaveYouSeen);
     scene.add(sign5);
     sign5.position.set(0, 6, 0);

@@ -39,7 +39,7 @@ THREE.Quaternion.prototype.easeTo = function(v1, easingFunction, interval) {
 myMath.clamp = function(number, min, max) {
     return Math.min(Math.max(number, min), max);
 };
-
+alert();
 class ViewControls extends THREE.Object3D {
 
     constructor(camera, scene, domElement, opts = {}) {

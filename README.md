@@ -1,6 +1,8 @@
 # View-Controls
 
 Camera controls for THREE.js based on the view controls of a popular online MMO. Use <kbd>Alt</kbd> and/or <kbd>Ctrl</kbd> keys to position and rotate a perspective camera.  Use <kbd>Esc</kbd> key to return camera to where it started.
+
+Demo with instructions is [here.](https://shoottheluck.github.io/View-Controls)
     
 ## How do I use it?
 ```javascript

@@ -97,7 +97,7 @@ function init() {
     pointLight1.position.set( 0, 3.4, - 6.5 );
     scene.add( pointLight1 );
 
-    var instructionsAltControl = new THREE.TextureLoader().load( "instructionsAltControl.png" );
+    var instructionsAltControl = new THREE.TextureLoader().load( "./textures/instructionsAltControl.png" );
     var sign2 = new Sign( instructionsAltControl );
     scene.add( sign2 );
     sign2.position.set( 0, 1, - 6 );

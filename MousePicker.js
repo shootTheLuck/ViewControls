@@ -4,7 +4,11 @@ class MousePicker {
     constructor(layer) {
         this.raycaster = new THREE.Raycaster();
         this.raycaster.layers.set(layer || 0);
-        this.mouseCoords = new THREE.Vector2();
+
+        // this.raycaster.params.Points.threshold = 1;
+        this.raycaster.params.Line.threshold = 3;
+        /*public mouseCoords are Vector3 to allow camera.unproject */
+        this.mouseCoords = new THREE.Vector3();
         this.intersects = [];
     }
 
@@ -45,4 +49,4 @@ class MousePicker {
     }
 }
 
-export default MousePicker;
+export {MousePicker};

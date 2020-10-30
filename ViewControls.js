@@ -163,12 +163,12 @@ class ViewControls extends THREE.Object3D {
     }
 
     handleMouseWheel( evt ) {
-        if (evt.altKey) {
-            return;
-        }
+        // if (evt.altKey) {
+            // return;
+        // }
         evt.preventDefault();
         var dist = this.camera.position.distanceTo( this.outer.position );
-        var dollyAmount = THREE.MathUtils.clamp( evt.deltaY * dist * this.wheelDollySpeed, - this.maxDollySpeed, this.maxDollySpeed );
+        var dollyAmount = THREE.MathUtils.clamp( evt.deltaY * dist * this.wheelDollySpeed, -this.maxDollySpeed, this.maxDollySpeed );
         this.camera.translateZ( dollyAmount );
         this.camera.position.z = Math.max( 0, this.camera.position.z );
     }

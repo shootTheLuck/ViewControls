@@ -21,17 +21,18 @@ class ViewControls extends THREE.Object3D {
 
         super();
         this.name = opts.name || "viewControls";
-        this.autoReturn = (opts.autoReturn !== undefined) ? opts.autoReturn : true;
+        this.autoReturn = ( opts.autoReturn !== undefined ) ? opts.autoReturn : true;
         this.rotationSpeed = opts.rotationSpeed || 0.005;
         this.maxDollySpeed = opts.maxDollySpeed || Infinity;
         this.altKey = opts.altKey || "Alt";
         this.distanceTolerance = opts.distanceTolerance || 0.002;
+        this.minCameraDistance = opts.minCameraDistance || camera.near * 2;
 
         this.camera = camera;
         this.scene = scene;
         this.domElement = domElement;
 
-        // make sure element can receive keys.
+        /* make sure element can receive keys. */
         if ( this.domElement.tabIndex < 0 ) {
             this.domElement.tabIndex = 0;
         }
@@ -81,7 +82,7 @@ class ViewControls extends THREE.Object3D {
     handleMouseDown( evt ) {
 
         let intersects = this.ray.pick( evt, this.camera, this.scene );
-        if ( ! intersects ) return;
+        if ( !intersects ) return;
 
         if ( evt.button === 0 ) {
 
@@ -142,19 +143,19 @@ class ViewControls extends THREE.Object3D {
         this.damper = 0.5;
         if ( evt.ctrlKey ) {
             // this.rotate( evt.movementY * this.rotationSpeed, evt.movementX * this.rotationSpeed );
-            this.movementX += (Math.sign(evt.movementY) + evt.movementY/5)* this.rotationSpeed;
-            this.movementY += (Math.sign(evt.movementX) + evt.movementX/3)* this.rotationSpeed;
+            this.movementX += ( Math.sign(evt.movementY) + evt.movementY/5 ) * this.rotationSpeed;
+            this.movementY += ( Math.sign(evt.movementX) + evt.movementX/3 ) * this.rotationSpeed;
         } else {
             // this.rotate( 0, evt.movementX * this.rotationSpeed );
             // this.dolly( this.camera, evt.movementY * this.rotationSpeed );
             // this.movementY += (Math.sign(evt.movementX) + evt.movementX/3)* this.rotationSpeed;
             // this.dollyMovement += (Math.sign(evt.movementY) + evt.movementY/5)* this.rotationSpeed;
             if (Math.abs(evt.movementY) > Math.abs(evt.movementX)) {
-                this.movementY += (Math.sign(evt.movementX)/100 + evt.movementX/1000)* this.rotationSpeed;
+                this.movementY += ( Math.sign(evt.movementX)/100 + evt.movementX/1000 ) * this.rotationSpeed;
             } else {
-                this.movementY += (Math.sign(evt.movementX) + evt.movementX/3)* this.rotationSpeed;
+                this.movementY += ( Math.sign(evt.movementX) + evt.movementX/3 ) * this.rotationSpeed;
             }
-            this.dollyMovement += (Math.sign(evt.movementY) + evt.movementY/5)* this.rotationSpeed;
+            this.dollyMovement += ( Math.sign(evt.movementY) + evt.movementY/5 ) * this.rotationSpeed;
         }
     }
 
@@ -163,14 +164,25 @@ class ViewControls extends THREE.Object3D {
     }
 
     handleMouseWheel( evt ) {
-        // if (evt.altKey) {
-            // return;
-        // }
         evt.preventDefault();
-        var dist = this.camera.position.distanceTo( this.outer.position );
-        var dollyAmount = THREE.MathUtils.clamp( evt.deltaY * dist * this.wheelDollySpeed, -this.maxDollySpeed, this.maxDollySpeed );
-        this.camera.translateZ( dollyAmount );
-        this.camera.position.z = Math.max( 0, this.camera.position.z );
+        /* if something else needs the mouse wheel it can use ctrlKey */
+        if (evt.ctrlKey && !evt.altKey) {
+            return;
+        }
+        var dollyAmount = evt.deltaY * this.wheelDollySpeed;
+
+        /* evt.deltaY is 3 or -3 in firefox*/
+        this.dolly( this.camera, dollyAmount, 1/3 );
+    }
+
+    dolly( camera, y, minDistance = 0 ) {
+        var dist = Math.max(minDistance, camera.position.distanceTo( this.outer.position ));
+        var dollyAmount = THREE.MathUtils.clamp( y * dist, - this.maxDollySpeed, this.maxDollySpeed );
+
+        if ( this.camera.position.z > 0 || dollyAmount > 0 ) {
+            camera.translateZ( dollyAmount );
+        }
+        camera.position.z = Math.max( this.minCameraDistance, camera.position.z );
     }
 
     handleKeyUp( evt ) {
@@ -180,7 +192,7 @@ class ViewControls extends THREE.Object3D {
     }
 
     handleKeyDown( evt ) {
-        if ( evt.key === "Escape" && this.autoReturn) {
+        if ( evt.key === "Escape" && this.autoReturn ) {
             this.exit();
         }
     }
@@ -192,19 +204,6 @@ class ViewControls extends THREE.Object3D {
             // this.rotateY(-this.movementY);
             // this.outer.rotateX(-this.movementX);
         }
-    }
-
-    dolly( camera, y ) {
-
-        if ( this.focused ) {
-
-            var dist = camera.position.distanceTo( this.outer.position );
-            var dollyAmount = THREE.MathUtils.clamp( y * dist, - this.maxDollySpeed, this.maxDollySpeed );
-            camera.translateZ( dollyAmount );
-            camera.position.z = Math.max( 0, camera.position.z );
-
-        }
-
     }
 
     panToObject( camera, position ) {
@@ -226,7 +225,7 @@ class ViewControls extends THREE.Object3D {
 
     startFocus( camera, position ) {
         this.focusIterations = 0;
-        this.scene.attach(camera);
+        this.scene.attach( camera );
         this.focusMatrix.lookAt( camera.position, position, camera.up );
         this.focusQuaternion.setFromRotationMatrix( this.focusMatrix );
         this.panToObject( camera, position );
@@ -258,7 +257,6 @@ class ViewControls extends THREE.Object3D {
     }
 
     removeListeners() {
-
         document.exitPointerLock();
         this.domElement.removeEventListener( "mousemove", this.mouseMoveListener );
         this.domElement.removeEventListener( "mouseup", this.mouseUpListener );
@@ -270,10 +268,10 @@ class ViewControls extends THREE.Object3D {
             this.animation();
         }
 
-        if (this.focused) {
-            this.rotateY(-this.movementY);
-            this.outer.rotateX(-this.movementX);
-            this.dolly(this.camera, this.dollyMovement);
+        if ( this.focused ) {
+            this.rotateY( -this.movementY );
+            this.outer.rotateX( -this.movementX );
+            this.dolly( this.camera, this.dollyMovement );
         }
 
         this.movementX *= this.damper;

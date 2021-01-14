@@ -31,7 +31,7 @@ function init() {
     grassTexture.repeat.set( 15, 15 );
 
     var floor = new THREE.Mesh(
-        new THREE.PlaneGeometry( 200, 200 ),
+        new THREE.PlaneBufferGeometry( 200, 200 ),
         new THREE.MeshStandardMaterial( { map: grassTexture } )
     );
     floor.rotateX( - Math.PI / 2 );
@@ -40,7 +40,7 @@ function init() {
     scene.add( floor );
 
     var wallTexture = new THREE.TextureLoader().load( "./textures/01murocrep512.jpg" );
-    var boxGeometry = new THREE.BoxGeometry( 2, 2, 2 );
+    var boxGeometry = new THREE.BoxBufferGeometry( 2, 2, 2 );
     var boxMaterial = new THREE.MeshStandardMaterial( { color: 0xeeeeee, map: wallTexture } );
 
     var box1 = new THREE.Mesh( boxGeometry, boxMaterial );
@@ -62,12 +62,12 @@ function init() {
 
         var signFrameMaterial = new THREE.MeshStandardMaterial( { color: 0x8B6914 } );
         THREE.Mesh.apply( this, [
-            new THREE.BoxGeometry( 0.1, 2, 0.1 ),
+            new THREE.BoxBufferGeometry( 0.1, 2, 0.1 ),
             signFrameMaterial
         ] );
 
         this.frame = new THREE.Mesh(
-            new THREE.BoxGeometry( 2.1, 0.1, 1.1 ),
+            new THREE.BoxBufferGeometry( 2.1, 0.1, 1.1 ),
             signFrameMaterial
         );
         this.add( this.frame );
@@ -75,7 +75,7 @@ function init() {
         this.frame.rotation.x = 0.75;
 
         var text = new THREE.Mesh(
-            new THREE.PlaneGeometry( 2, 1 ),
+            new THREE.PlaneBufferGeometry( 2, 1 ),
             new THREE.MeshStandardMaterial( { map: textMaterial } )
         );
         text.rotation.x = - Math.PI / 2;

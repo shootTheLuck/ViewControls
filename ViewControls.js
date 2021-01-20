@@ -169,6 +169,7 @@ class ViewControls extends THREE.Object3D {
         if (evt.ctrlKey && !evt.altKey) {
             return;
         }
+        this.animation = null;
         var dollyAmount = evt.deltaY * this.wheelDollySpeed;
 
         /* evt.deltaY is 3 or -3 in firefox*/

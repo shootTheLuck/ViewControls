@@ -41,7 +41,7 @@ class ViewControls extends THREE.Object3D {
         this.outer.name = "outer";
         this.add( this.outer );
 
-        this.ray = new MousePicker();
+        this.mousePicker = new MousePicker();
         this.oldPosition = camera.position.clone();
         this.oldQuaternion = camera.quaternion.clone();
         this.oldParent = camera.parent || scene;
@@ -81,7 +81,7 @@ class ViewControls extends THREE.Object3D {
 
     handleMouseDown( evt ) {
 
-        let intersects = this.ray.pick( evt, this.camera, this.scene );
+        let intersects = this.mousePicker.pick( evt, this.camera, this.scene );
         if ( !intersects ) return;
 
         if ( evt.button === 0 ) {
@@ -170,17 +170,18 @@ class ViewControls extends THREE.Object3D {
             return;
         }
         this.animation = null;
-        var dollyAmount = evt.deltaY * this.wheelDollySpeed;
+        var wheelAmount = evt.deltaY * this.wheelDollySpeed;
 
         /* evt.deltaY is 3 or -3 in firefox*/
-        this.dolly( this.camera, dollyAmount, 1/3 );
+        this.dolly( this.camera, wheelAmount, 0 );
     }
 
-    dolly( camera, y, minDistance = 0 ) {
-        var dist = Math.max(minDistance, camera.position.distanceTo( this.outer.position ));
-        var dollyAmount = THREE.MathUtils.clamp( y * dist, - this.maxDollySpeed, this.maxDollySpeed );
+    dolly( camera, wheelAmount, minDistance = 0 ) {
+        // var dist = camera.position.distanceTo( this.outer.position );
+        // console.log("dist", dist, "z", this.camera.position.z);
+        var dollyAmount = THREE.MathUtils.clamp( wheelAmount * this.camera.position.z, - this.maxDollySpeed, this.maxDollySpeed );
 
-        if ( this.camera.position.z > 0 || dollyAmount > 0 ) {
+        if ( this.camera.position.z > 0 ) {
             camera.translateZ( dollyAmount );
         }
         camera.position.z = Math.max( this.minCameraDistance, camera.position.z );

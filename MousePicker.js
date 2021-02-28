@@ -1,12 +1,13 @@
 
-class MousePicker {
+class MousePicker extends THREE.Raycaster {
 
     constructor(layer) {
-        this.raycaster = new THREE.Raycaster();
-        this.raycaster.layers.set(layer || 0);
+        super();
+        // this = new THREE.Raycaster();
+        this.layers.set(layer || 0);
 
-        this.raycaster.params.Points.threshold = 1;
-        this.raycaster.params.Line.threshold = 3;
+        this.params.Points.threshold = 1;
+        this.params.Line.threshold = 3;
         /*public mouseCoords are Vector3 to allow camera.unproject */
         this.mouseCoords = new THREE.Vector3();
         this.intersects = [];
@@ -19,7 +20,7 @@ class MousePicker {
 
     setRaycaster(evt, camera) {
         this.updateMouseCoords(evt);
-        this.raycaster.setFromCamera(this.mouseCoords, camera);
+        this.setFromCamera(this.mouseCoords, camera);
     }
 
     pickAll(evt, camera, object) {
@@ -28,9 +29,9 @@ class MousePicker {
         this.intersects.length = 0;
 
         if (Array.isArray(object)) {
-            this.raycaster.intersectObjects(object, true, this.intersects);
+            this.intersectObjects(object, true, this.intersects);
         } else {
-            this.raycaster.intersectObject(object, true, this.intersects);
+            this.intersectObject(object, true, this.intersects);
         }
 
         if (this.intersects.length) {

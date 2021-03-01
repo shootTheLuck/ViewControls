@@ -256,7 +256,6 @@ class ViewControls extends THREE.Object3D {
         this.domElement.requestPointerLock();
         this.domElement.addEventListener( "mousemove", this.mouseMoveListener );
         this.domElement.addEventListener( "mouseup", this.mouseUpListener );
-        this.domElement.addEventListener( "wheel", this.mouseWheelListener );
         this.domElement.addEventListener( "keyup", this.keyUpListener );
     }
 
@@ -264,7 +263,6 @@ class ViewControls extends THREE.Object3D {
         document.exitPointerLock();
         this.domElement.removeEventListener( "mousemove", this.mouseMoveListener );
         this.domElement.removeEventListener( "mouseup", this.mouseUpListener );
-        this.domElement.removeEventListener( "wheel", this.mouseWheelListener );
         this.domElement.removeEventListener( "keyup", this.keyUpListener );
     }
 

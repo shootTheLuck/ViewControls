@@ -3,7 +3,6 @@ class MousePicker extends THREE.Raycaster {
 
     constructor(layer) {
         super();
-        // this = new THREE.Raycaster();
         this.layers.set(layer || 0);
 
         this.params.Points.threshold = 1;

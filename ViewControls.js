@@ -50,7 +50,7 @@ class ViewControls extends THREE.Object3D {
         this.focusIncrement = 0;
         this.focusSpeed = 0.03;
 
-        this.wheelDollySpeed = 0.03;
+        this.wheelDollySpeed = 0.1;
         this.focusMatrix = new THREE.Matrix4();
         this.focusQuaternion = new THREE.Quaternion();
         this.focused = false;
@@ -59,8 +59,8 @@ class ViewControls extends THREE.Object3D {
         this.maxFocusIterations = 20;
         this.movementX = 0;
         this.movementY = 0;
-        this.dollyMovement = 0;
-        this.damper = 0;
+        this.movementZ = 0;
+        this.damper = 0.5;
 
         this.mouseMoveListener = this.handleMouseMove.bind( this );
         this.mouseDownListener = this.handleMouseDown.bind( this );
@@ -147,16 +147,12 @@ class ViewControls extends THREE.Object3D {
             this.movementX += ( Math.sign(evt.movementY) + evt.movementY/5 ) * this.rotationSpeed;
             this.movementY += ( Math.sign(evt.movementX) + evt.movementX/3 ) * this.rotationSpeed;
         } else {
-            // this.rotate( 0, evt.movementX * this.rotationSpeed );
-            // this.dolly( this.camera, evt.movementY * this.rotationSpeed );
-            // this.movementY += (Math.sign(evt.movementX) + evt.movementX/3)* this.rotationSpeed;
-            // this.dollyMovement += (Math.sign(evt.movementY) + evt.movementY/5)* this.rotationSpeed;
             if (Math.abs(evt.movementY) > Math.abs(evt.movementX)) {
                 this.movementY += ( Math.sign(evt.movementX)/100 + evt.movementX/1000 ) * this.rotationSpeed;
             } else {
                 this.movementY += ( Math.sign(evt.movementX) + evt.movementX/3 ) * this.rotationSpeed;
             }
-            this.dollyMovement += ( Math.sign(evt.movementY) + evt.movementY/5 ) * this.rotationSpeed;
+            this.movementZ += ( Math.sign(evt.movementY) + evt.movementY/5 ) * this.rotationSpeed;
         }
     }
 
@@ -171,21 +167,21 @@ class ViewControls extends THREE.Object3D {
             return;
         }
         this.animation = null;
-        var wheelAmount = evt.deltaY * this.wheelDollySpeed;
+        var direction = Math.sign(evt.deltaY);
+        var wheelAmount = direction * this.wheelDollySpeed;
 
         /* evt.deltaY is 3 or -3 in firefox*/
-        this.dolly( this.camera, wheelAmount, 0 );
+        this.dolly( wheelAmount, 0 );
     }
 
-    dolly( camera, wheelAmount, minDistance = 0 ) {
-        // var dist = camera.position.distanceTo( this.outer.position );
-        // console.log("dist", dist, "z", this.camera.position.z);
-        var dollyAmount = THREE.MathUtils.clamp( wheelAmount * this.camera.position.z, - this.maxDollySpeed, this.maxDollySpeed );
+    dolly( amount, minDistance = 0 ) {
+        var dollyAmount = THREE.MathUtils.clamp( amount * this.camera.position.z,
+                -this.maxDollySpeed, this.maxDollySpeed );
 
         if ( this.camera.position.z > 0 ) {
-            camera.translateZ( dollyAmount );
+            this.camera.translateZ( dollyAmount );
         }
-        camera.position.z = Math.max( this.minCameraDistance, camera.position.z );
+        this.camera.position.z = Math.max( this.minCameraDistance, this.camera.position.z );
     }
 
     handleKeyUp( evt ) {
@@ -197,15 +193,6 @@ class ViewControls extends THREE.Object3D {
     handleKeyDown( evt ) {
         if ( evt.key === "Escape" && this.autoReturn ) {
             this.exit();
-        }
-    }
-
-    rotate( x, y ) {
-        if ( this.focused ) {
-            this.rotateY( - y + Math.sign(-y)/60 );
-            this.outer.rotateX( - x );
-            // this.rotateY(-this.movementY);
-            // this.outer.rotateX(-this.movementX);
         }
     }
 
@@ -274,13 +261,13 @@ class ViewControls extends THREE.Object3D {
         if ( this.focused ) {
             this.rotateY( -this.movementY );
             this.outer.rotateX( -this.movementX );
-            this.dolly( this.camera, this.dollyMovement );
+            this.dolly( this.movementZ );
         }
 
         this.movementX *= this.damper;
         this.movementY *= this.damper;
-        this.damper *= 0.5;
-        this.dollyMovement *= 0.5;
+        this.movementZ *= this.damper;
+        // this.damper *= 0.5;
     }
 
     exit() {

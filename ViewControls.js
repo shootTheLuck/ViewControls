@@ -77,7 +77,7 @@ class ViewControls extends THREE.Object3D {
         } );
 
         this.scene.add( this );
-        this.selectedObjects = [];
+
     }
 
     handleMouseDown( evt ) {
@@ -124,8 +124,6 @@ class ViewControls extends THREE.Object3D {
 
         if ( evt.button === 2 ) {
 
-            this.selectedObject = intersects.object;
-            this.state = 0;
             evt.preventDefault();
             this.dispatchEvent( {
                 type: "rightClick",

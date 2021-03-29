@@ -1,6 +1,5 @@
 
 import {MousePicker} from "./MousePicker.js";
-// import * as THREE from '../js/three.js-r115/build/three.module.js';
 
 class ViewControls extends THREE.Object3D {
 
@@ -141,7 +140,6 @@ class ViewControls extends THREE.Object3D {
     handleMouseMove( evt ) {
         this.damper = 0.5;
         if ( evt.ctrlKey ) {
-            // this.rotate( evt.movementY * this.rotationSpeed, evt.movementX * this.rotationSpeed );
             this.movementX += ( Math.sign(evt.movementY) + evt.movementY/5 ) * this.rotationSpeed;
             this.movementY += ( Math.sign(evt.movementX) + evt.movementX/3 ) * this.rotationSpeed;
         } else {
@@ -267,7 +265,7 @@ class ViewControls extends THREE.Object3D {
         // this.damper *= 0.5;
     }
 
-    saveState() { //unstaged change RDM
+    saveState() {
         this.oldPosition = this.camera.position.clone();
         this.oldQuaternion = this.camera.quaternion.clone();
         this.oldParent = this.camera.parent || this.scene;

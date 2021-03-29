@@ -168,7 +168,6 @@ class ViewControls extends THREE.Object3D {
         var direction = Math.sign(evt.deltaY);
         var wheelAmount = direction * this.wheelDollySpeed;
 
-        /* evt.deltaY is 3 or -3 in firefox*/
         this.dolly( wheelAmount, 0 );
     }
 
@@ -219,7 +218,7 @@ class ViewControls extends THREE.Object3D {
         this.panToObject( camera, position );
     }
 
-    unFocus( camera, scene ) {
+    unFocus( camera ) {
         this.focusIncrement = 0;
         this.focused = false;
         this.oldParent.attach( camera );
@@ -266,6 +265,12 @@ class ViewControls extends THREE.Object3D {
         this.movementY *= this.damper;
         this.movementZ *= this.damper;
         // this.damper *= 0.5;
+    }
+
+    saveState() { //unstaged change RDM
+        this.oldPosition = this.camera.position.clone();
+        this.oldQuaternion = this.camera.quaternion.clone();
+        this.oldParent = this.camera.parent || this.scene;
     }
 
     exit() {

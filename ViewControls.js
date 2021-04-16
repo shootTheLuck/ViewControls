@@ -139,16 +139,19 @@ class ViewControls extends THREE.Object3D {
 
     handleMouseMove( evt ) {
         this.damper = 0.5;
+        const x = evt.movementX;
+        const y = evt.movementY;
+
         if ( evt.ctrlKey ) {
-            this.movementX += ( Math.sign(evt.movementY) + evt.movementY/5 ) * this.rotationSpeed;
-            this.movementY += ( Math.sign(evt.movementX) + evt.movementX/3 ) * this.rotationSpeed;
+            this.movementX += ( Math.sign(y) + y/5 ) * this.rotationSpeed;
+            this.movementY += ( Math.sign(x) + x/3 ) * this.rotationSpeed;
         } else {
-            if (Math.abs(evt.movementY) > Math.abs(evt.movementX)) {
-                this.movementY += ( Math.sign(evt.movementX)/100 + evt.movementX/1000 ) * this.rotationSpeed;
+            if (Math.abs(y) > Math.abs(x)) {
+                this.movementY += ( Math.sign(x)/100 + x/1000 ) * this.rotationSpeed;
             } else {
-                this.movementY += ( Math.sign(evt.movementX) + evt.movementX/3 ) * this.rotationSpeed;
+                this.movementY += ( Math.sign(x) + x/3 ) * this.rotationSpeed;
             }
-            this.movementZ += ( Math.sign(evt.movementY) + evt.movementY/5 ) * this.rotationSpeed;
+            this.movementZ += ( Math.sign(y) + y/5 ) * this.rotationSpeed;
         }
     }
 

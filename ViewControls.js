@@ -6,16 +6,16 @@ class ViewControls extends THREE.Object3D {
     constructor( camera, scene, domElement, opts = {} ) {
 
 
-        if (!(camera instanceof THREE.Camera)) {
-            console.error("ViewControls requires a THREE camera as first parameter");
+        if ( !camera.isCamera ) {
+            console.error( "SphereControls requires a THREE camera as second parameter" );
         }
 
-        if (!(scene instanceof THREE.Scene)) {
-            console.error("ViewControls requires a THREE scene as second parameter");
+        if ( !scene.isScene ) {
+            console.error( "SphereControls requires a THREE scene as third parameter" );
         }
 
-        if (!(domElement instanceof HTMLElement)) {
-            console.error("ViewControls requires a DOM element (renderer.domElement) as third parameter");
+        if ( !(domElement instanceof HTMLElement) ) {
+            console.error( "ViewControls requires a DOM element (renderer.domElement) as third parameter" );
         }
 
         super();
@@ -23,7 +23,7 @@ class ViewControls extends THREE.Object3D {
         this.autoReturn = ( opts.autoReturn !== undefined ) ? opts.autoReturn : true;
         this.rotationSpeed = opts.rotationSpeed || 0.005;
         this.maxDollySpeed = opts.maxDollySpeed || Infinity;
-        this.altKey = opts.altKey || "Alt";
+        this.activationKey = opts.activationKey || "Alt";
         this.distanceTolerance = opts.distanceTolerance || 0.002;
         this.minCameraDistance = opts.minCameraDistance || camera.near * 2;
 
@@ -37,7 +37,6 @@ class ViewControls extends THREE.Object3D {
         }
 
         this.outer = new THREE.Object3D();
-        // this.outer.rotation.y += Math.PI;
         this.outer.name = "outer";
         this.add( this.outer );
 
@@ -86,7 +85,7 @@ class ViewControls extends THREE.Object3D {
 
         if ( evt.button === 0 ) {
 
-            if ( evt.getModifierState(this.altKey) ) {
+            if ( evt.getModifierState(this.activationKey) ) {
 
                 this.addListeners();
                 this.unFocus( this.camera, this.scene );
@@ -162,7 +161,7 @@ class ViewControls extends THREE.Object3D {
     handleMouseWheel( evt ) {
         evt.preventDefault();
         /* if something else needs the mouse wheel it can use ctrlKey */
-        if (evt.ctrlKey && !evt.altKey) {
+        if (evt.ctrlKey && !evt.activationKey) {
             return;
         }
         this.animation = null;
@@ -183,7 +182,7 @@ class ViewControls extends THREE.Object3D {
     }
 
     handleKeyUp( evt ) {
-        if ( evt.key === this.altKey ) {
+        if ( evt.key === this.activationKey ) {
             this.removeListeners();
         }
     }

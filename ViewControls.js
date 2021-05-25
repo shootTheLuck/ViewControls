@@ -7,11 +7,11 @@ class ViewControls extends THREE.Object3D {
 
 
         if ( !camera.isCamera ) {
-            console.error( "SphereControls requires a THREE camera as second parameter" );
+            console.error( "ViewControls requires a THREE camera as second parameter" );
         }
 
         if ( !scene.isScene ) {
-            console.error( "SphereControls requires a THREE scene as third parameter" );
+            console.error( "ViewControls requires a THREE scene as third parameter" );
         }
 
         if ( !(domElement instanceof HTMLElement) ) {
@@ -90,7 +90,6 @@ class ViewControls extends THREE.Object3D {
                 this.addListeners();
                 this.unFocus( this.camera, this.scene );
                 this.startFocus( this.camera, intersects.point );
-                /// no event for just looking!
 
             } else {
 

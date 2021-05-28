@@ -1,5 +1,5 @@
 
-import {MousePicker} from "./MousePicker.js";
+import { RayPicker } from "./RayPicker.js";
 
 class ViewControls extends THREE.Object3D {
 
@@ -40,7 +40,7 @@ class ViewControls extends THREE.Object3D {
         this.outer.name = "outer";
         this.add( this.outer );
 
-        this.mousePicker = new MousePicker();
+        this.rayPicker = new RayPicker();
         this.oldPosition = camera.position.clone();
         this.oldQuaternion = camera.quaternion.clone();
         this.oldParent = camera.parent || scene;
@@ -80,7 +80,8 @@ class ViewControls extends THREE.Object3D {
 
     handleMouseDown( evt ) {
 
-        let intersects = this.mousePicker.pick( evt, this.camera, this.scene );
+        this.rayPicker.setFromMouseEventAndCamera( evt, this.camera );
+        let intersects = this.rayPicker.pick( this.scene );
         if ( !intersects ) return;
 
         if ( evt.button === 0 ) {
@@ -141,15 +142,17 @@ class ViewControls extends THREE.Object3D {
         const y = evt.movementY;
 
         if ( evt.ctrlKey ) {
-            this.movementX += ( Math.sign(y) + y/5 ) * this.rotationSpeed;
-            this.movementY += ( Math.sign(x) + x/3 ) * this.rotationSpeed;
+            this.movementX += ( Math.sign( y ) + y/5 ) * this.rotationSpeed;
+            this.movementY += ( Math.sign( x ) + x/3 ) * this.rotationSpeed;
         } else {
-            if (Math.abs(y) > Math.abs(x)) {
-                this.movementY += ( Math.sign(x)/100 + x/1000 ) * this.rotationSpeed;
+
+            if ( Math.abs( y ) > Math.abs( x ) ) {
+                this.movementY += ( Math.sign( x )/100 + x/1000 ) * this.rotationSpeed;
             } else {
-                this.movementY += ( Math.sign(x) + x/3 ) * this.rotationSpeed;
+                this.movementY += ( Math.sign( x ) + x/3 ) * this.rotationSpeed;
             }
-            this.movementZ += ( Math.sign(y) + y/5 ) * this.rotationSpeed;
+
+            this.movementZ += ( Math.sign( y ) + y/5 ) * this.rotationSpeed;
         }
     }
 
@@ -160,7 +163,7 @@ class ViewControls extends THREE.Object3D {
     handleMouseWheel( evt ) {
         evt.preventDefault();
         /* if something else needs the mouse wheel it can use ctrlKey */
-        if (evt.ctrlKey && !evt.activationKey) {
+        if ( evt.ctrlKey && !evt.activationKey ) {
             return;
         }
         this.animation = null;
@@ -279,4 +282,4 @@ class ViewControls extends THREE.Object3D {
     }
 }
 
-export {ViewControls};
+export { ViewControls };

@@ -1,5 +1,5 @@
 
-import {ViewControls} from "./ViewControls.js";
+import { ViewControls } from "./ViewControls.js";
 var camera, scene, renderer, controls;
 
 init();

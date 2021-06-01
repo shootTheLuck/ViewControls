@@ -45,22 +45,20 @@ class RayPicker extends THREE.Raycaster {
     /* return closest of all raycaster intersects, allowing for
      * optional test function. example of use with test function to ignore "grass":
 
-       let result = rayPicker.pick( scene, ( intersect ) => {
+        let result = rayPicker.pick( scene, ( intersect ) => {
+            return ( intersect.object.name !== "grass" );
+        } );
 
+    * or
+
+        let result = rayPicker.pick( scene, ( intersect ) => {
            if ( intersect.object.name === "grass" ) {
               return false;
            }
-
            return true;
        } );
     *
-    *  or:
-
-        let result = rayPicker.pick( scene, ( intersect ) => {
-            return !( intersect.object.name === "grass" );
-        } );
-
-     */
+    */
 
     pick( object, testFunction ) {
         let intersectsArray = this.pickAll( object );

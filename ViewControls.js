@@ -5,7 +5,6 @@ class ViewControls extends THREE.Object3D {
 
     constructor( camera, scene, domElement, opts = {} ) {
 
-
         if ( !camera.isCamera ) {
             console.error( "ViewControls requires a THREE camera as second parameter" );
         }
@@ -94,46 +93,39 @@ class ViewControls extends THREE.Object3D {
 
             } else {
 
-                this.dispatchEvent( {
-                    type: "leftClick",
-                    detail: {
-                        originalEvent: evt,
-                        object: intersects.object,
-                        intersection: intersects
+                var event = {type: "leftClick"};
+
+                for ( const property in intersects ) {
+
+                    if ( intersects.hasOwnProperty( property ) ) {
+                        event[ property ] = intersects[ property ];
                     }
-                } );
+                }
+
+                event.originalEvent = evt;
+
+                this.dispatchEvent( event );
 
             }
-
-            if ( evt.shiftKey ) {
-
-                this.dispatchEvent( {
-                    type: "additionalSelection",
-                    detail: {
-                        originalEvent: evt,
-                        object: intersects.object,
-                        intersection: intersects
-                    }
-                } );
-
-            }
-
         }
 
         if ( evt.button === 2 ) {
 
             evt.preventDefault();
-            this.dispatchEvent( {
-                type: "rightClick",
-                detail: {
-                    originalEvent: evt,
-                    object: intersects.object,
-                    intersection: intersects
+
+            var event = {type: "rightClick"};
+
+            for ( const property in intersects ) {
+
+                if ( intersects.hasOwnProperty( property ) ) {
+                    event[ property ] = intersects[ property ];
                 }
-            } );
+            }
+
+            event.originalEvent = evt;
+            this.dispatchEvent(event);
 
         }
-
     }
 
     handleMouseMove( evt ) {

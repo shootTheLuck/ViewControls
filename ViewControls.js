@@ -35,9 +35,9 @@ class ViewControls extends THREE.Object3D {
             this.domElement.tabIndex = 0;
         }
 
-        this.outer = new THREE.Object3D();
-        this.outer.name = "outer";
-        this.add( this.outer );
+        this.cameraHolder = new THREE.Object3D();
+        this.cameraHolder.name = "cameraHolder";
+        this.add( this.cameraHolder );
 
         this.rayPicker = new RayPicker();
         this.oldPosition = camera.position.clone();
@@ -196,8 +196,8 @@ class ViewControls extends THREE.Object3D {
             this.focused = true;
             this.focusIncrement = 0;
             this.position.copy( position );
-            this.outer.lookAt( camera.position );
-            this.outer.attach( camera );
+            this.cameraHolder.lookAt( camera.position );
+            this.cameraHolder.attach( camera );
             this.animation = null;
         } else {
             this.animation = this.panToObject.bind( this, camera, position );
@@ -251,7 +251,7 @@ class ViewControls extends THREE.Object3D {
 
         if ( this.focused ) {
             this.rotateY( -this.movementY );
-            this.outer.rotateX( -this.movementX );
+            this.cameraHolder.rotateX( -this.movementX );
             this.dolly( this.movementZ );
         }
 

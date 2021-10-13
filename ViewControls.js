@@ -162,10 +162,10 @@ class ViewControls extends THREE.Object3D {
         var direction = Math.sign(evt.deltaY);
         var wheelAmount = direction * this.wheelDollySpeed;
 
-        this.dolly( wheelAmount, 0 );
+        this.dolly( wheelAmount );
     }
 
-    dolly( amount, minDistance = 0 ) {
+    dolly( amount ) {
         var dollyAmount = THREE.MathUtils.clamp( amount * this.camera.position.z,
                 -this.maxDollySpeed, this.maxDollySpeed );
 

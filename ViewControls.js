@@ -20,7 +20,8 @@ class ViewControls extends THREE.Object3D {
         super();
         this.name = opts.name || "viewControls";
         this.autoReturn = ( opts.autoReturn !== undefined ) ? opts.autoReturn : true;
-        this.rotationSpeed = opts.rotationSpeed || 0.005;
+        this.rotationSpeed = opts.rotationSpeed || 0.003;
+        this.dollySpeed = opts.dollySpeed || 0.003;
         this.maxDollySpeed = opts.maxDollySpeed || Infinity;
         this.activationKey = opts.activationKey || "Alt";
         this.distanceTolerance = opts.distanceTolerance || 0.002;
@@ -134,17 +135,17 @@ class ViewControls extends THREE.Object3D {
         const y = evt.movementY;
 
         if ( evt.ctrlKey ) {
-            this.movementX += ( Math.sign( y ) + y/5 ) * this.rotationSpeed;
-            this.movementY += ( Math.sign( x ) + x/3 ) * this.rotationSpeed;
+            this.movementX += y * this.rotationSpeed;
+            this.movementY += x * this.rotationSpeed;
         } else {
 
             if ( Math.abs( y ) > Math.abs( x ) ) {
-                this.movementY += ( Math.sign( x )/100 + x/1000 ) * this.rotationSpeed;
+                this.movementY += x/1000 * this.rotationSpeed;
             } else {
-                this.movementY += ( Math.sign( x ) + x/3 ) * this.rotationSpeed;
+                this.movementY += x * this.rotationSpeed;
             }
 
-            this.movementZ += ( Math.sign( y ) + y/5 ) * this.rotationSpeed;
+            this.movementZ += y * this.dollySpeed;
         }
     }
 

@@ -20,7 +20,9 @@ class ViewControls extends THREE.Object3D {
         super();
         this.name = opts.name || "viewControls";
         this.autoReturn = ( opts.autoReturn !== undefined ) ? opts.autoReturn : true;
-        this.rotationSpeed = opts.rotationSpeed || 0.003;
+        this.rotationSpeed = opts.rotationSpeed || 0.02;
+        this.accelerationRate = opts.accelerationRate || 0.1;
+        this.damper = opts.damper || 0.5;
         this.dollySpeed = opts.dollySpeed || 0.003;
         this.maxDollySpeed = opts.maxDollySpeed || Infinity;
         this.activationKey = opts.activationKey || "Alt";
@@ -58,7 +60,6 @@ class ViewControls extends THREE.Object3D {
         this.movementX = 0;
         this.movementY = 0;
         this.movementZ = 0;
-        this.damper = 0.5;
 
         this.mouseMoveListener = this.handleMouseMove.bind( this );
         this.mouseDownListener = this.handleMouseDown.bind( this );
@@ -104,7 +105,6 @@ class ViewControls extends THREE.Object3D {
                 }
 
                 event.originalEvent = evt;
-
                 this.dispatchEvent( event );
 
             }
@@ -129,23 +129,31 @@ class ViewControls extends THREE.Object3D {
         }
     }
 
+    /* with ctrlKey = orbit side to side + up and down
+     * without ctrlKey = orbit side to side + pan with up and down
+     */
+
     handleMouseMove( evt ) {
-        this.damper = 0.5;
+
         const x = evt.movementX;
         const y = evt.movementY;
 
         if ( evt.ctrlKey ) {
-            this.movementX += y * this.rotationSpeed;
-            this.movementY += x * this.rotationSpeed;
+
+            this.movementX += y * this.accelerationRate;
+            this.movementY += x * this.accelerationRate;
+
         } else {
 
             if ( Math.abs( y ) > Math.abs( x ) ) {
-                this.movementY += x/1000 * this.rotationSpeed;
+
+                /* if panning, kill most of the movement from side to side */
+                this.movementY += x/1000 * this.accelerationRate;
             } else {
-                this.movementY += x * this.rotationSpeed;
+                this.movementY += x * this.accelerationRate;
             }
 
-            this.movementZ += y * this.dollySpeed;
+            this.movementZ += y * this.accelerationRate;
         }
     }
 
@@ -155,10 +163,12 @@ class ViewControls extends THREE.Object3D {
 
     handleMouseWheel( evt ) {
         evt.preventDefault();
+
         /* if something else needs the mouse wheel it can use ctrlKey */
         if ( evt.ctrlKey && !evt.activationKey ) {
             return;
         }
+
         this.animation = null;
         var direction = Math.sign(evt.deltaY);
         var wheelAmount = direction * this.wheelDollySpeed;
@@ -251,15 +261,14 @@ class ViewControls extends THREE.Object3D {
         }
 
         if ( this.focused ) {
-            this.rotateY( -this.movementY );
-            this.cameraHolder.rotateX( -this.movementX );
-            this.dolly( this.movementZ );
+            this.rotateY( -this.movementY  * this.rotationSpeed);
+            this.cameraHolder.rotateX( -this.movementX * this.rotationSpeed );
+            this.dolly( this.movementZ  * this.rotationSpeed);
         }
 
         this.movementX *= this.damper;
         this.movementY *= this.damper;
         this.movementZ *= this.damper;
-        // this.damper *= 0.5;
     }
 
     saveState() {

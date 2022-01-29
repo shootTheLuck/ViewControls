@@ -18,6 +18,10 @@ function init() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
+    controls = new ViewControls( camera, scene, renderer.domElement );
+
+    // remaining code in this block is for various scene items
+
     var ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.4 );
     scene.add( ambientLight );
 
@@ -55,7 +59,6 @@ function init() {
     box3.position.set( 0, 6, 0 );
     scene.add( box3 );
 
-    controls = new ViewControls( camera, scene, renderer.domElement );
     window.addEventListener( 'resize', onWindowResize, false );
 
     function Sign( textMaterial ) {
@@ -132,9 +135,9 @@ function init() {
 
 function animate() {
 
-    requestAnimationFrame( animate );
     controls.update();
     renderer.render( scene, camera );
+    requestAnimationFrame( animate );
 
 }
 

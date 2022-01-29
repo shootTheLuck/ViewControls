@@ -76,6 +76,7 @@ class ViewControls extends THREE.Object3D {
         } );
 
         this.scene.add( this );
+        this.enabled = true;
 
     }
 
@@ -87,7 +88,7 @@ class ViewControls extends THREE.Object3D {
 
         if ( evt.button === 0 ) {
 
-            if ( evt.getModifierState(this.activationKey) ) {
+            if ( this.enabled && evt.getModifierState(this.activationKey) ) {
 
                 this.addListeners();
                 this.unFocus( this.camera, this.scene );
@@ -135,8 +136,12 @@ class ViewControls extends THREE.Object3D {
 
     handleMouseMove( evt ) {
 
+        if (!this.enabled) return;
+
         const x = evt.movementX;
         const y = evt.movementY;
+        // const x = THREE.MathUtils.clamp(evt.movementX, -100, 100);
+        // const y = THREE.MathUtils.clamp(evt.movementY, -100, 100);
 
         if ( evt.ctrlKey ) {
 
@@ -162,6 +167,9 @@ class ViewControls extends THREE.Object3D {
     }
 
     handleMouseWheel( evt ) {
+
+        if (!this.enabled) return;
+
         evt.preventDefault();
 
         /* if something else needs the mouse wheel it can use ctrlKey */
@@ -256,6 +264,9 @@ class ViewControls extends THREE.Object3D {
     }
 
     update() {
+
+        if (!this.enabled) return;
+
         if ( this.animation ) {
             this.animation();
         }

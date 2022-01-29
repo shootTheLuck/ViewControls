@@ -1,6 +1,6 @@
 
 import { ViewControls } from "./ViewControls.js";
-var camera, scene, renderer, controls;
+var camera, scene, renderer, viewControls;
 
 init();
 animate();
@@ -18,7 +18,7 @@ function init() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
-    controls = new ViewControls( camera, scene, renderer.domElement );
+    viewControls = new ViewControls( camera, scene, renderer.domElement );
 
     // remaining code in this block is for various scene items
 
@@ -135,7 +135,7 @@ function init() {
 
 function animate() {
 
-    controls.update();
+    viewControls.update();
     renderer.render( scene, camera );
     requestAnimationFrame( animate );
 

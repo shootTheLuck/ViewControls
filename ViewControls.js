@@ -91,7 +91,7 @@ class ViewControls extends THREE.Object3D {
             if ( this.enabled && evt.getModifierState(this.activationKey) ) {
 
                 this.addListeners();
-                this.unFocus( this.camera, this.scene );
+                this.unFocus();
                 this.startFocus( this.camera, intersects.point );
 
             } else {
@@ -231,21 +231,21 @@ class ViewControls extends THREE.Object3D {
         this.panToObject( camera, position );
     }
 
-    unFocus( camera ) {
+    unFocus() {
         this.focusIncrement = 0;
         this.focused = false;
-        this.oldParent.attach( camera );
+        this.oldParent.attach( this.camera );
     }
 
-    resetCamera( camera, resetPosition, resetQuaternion ) {
-        if ( camera.position.manhattanDistanceTo( resetPosition ) < this.distanceTolerance ) {
-            camera.position.copy( resetPosition );
-            camera.quaternion.copy( resetQuaternion );
+    resetCamera() {
+        if ( this.camera.position.manhattanDistanceTo( this.oldPosition ) < this.distanceTolerance ) {
+            this.camera.position.copy( this.oldPosition );
+            this.camera.quaternion.copy( this.oldQuaternion );
             this.animation = null;
         } else {
-            this.animation = this.resetCamera.bind( this, camera, resetPosition, resetQuaternion );
-            camera.position.lerp( resetPosition, 0.11 );
-            camera.quaternion.slerp( resetQuaternion, 0.11 );
+            this.animation = this.resetCamera.bind( this );
+            this.camera.position.lerp( this.oldPosition, 0.11 );
+            this.camera.quaternion.slerp( this.oldQuaternion, 0.11 );
         }
     }
 
@@ -289,8 +289,8 @@ class ViewControls extends THREE.Object3D {
     }
 
     exit() {
-        this.unFocus( this.camera, this.scene );
-        this.resetCamera( this.camera, this.oldPosition, this.oldQuaternion );
+        this.unFocus();
+        this.resetCamera();
         this.removeListeners();
     }
 }

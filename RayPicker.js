@@ -20,7 +20,7 @@ class RayPicker extends THREE.Raycaster {
         super.setFromCamera( this.mouseCoords, camera );
     }
 
-    setFromCamera(camera) {
+    setFromCamera( camera ) {
         super.setFromCamera( this.centerCoords, camera );
     }
 
@@ -32,7 +32,7 @@ class RayPicker extends THREE.Raycaster {
         if ( Array.isArray( object ) ) {
             this.intersectObjects( object, true, this.intersects );
         } else {
-            this.intersectObject( object, true, this.intersects);
+            this.intersectObject( object, true, this.intersects );
         }
 
         if ( this.intersects.length ) {
@@ -66,8 +66,8 @@ class RayPicker extends THREE.Raycaster {
             var index = 0;
 
             if ( typeof testFunction === "function" ) {
-                while (index < intersectsArray.length &&
-                    !testFunction(intersectsArray[ index ] ) ) {
+                while ( index < intersectsArray.length &&
+                    !testFunction( intersectsArray[ index ] ) ) {
                     index ++;
                 }
             }

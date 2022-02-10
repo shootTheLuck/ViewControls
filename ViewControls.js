@@ -88,7 +88,7 @@ class ViewControls extends THREE.Object3D {
 
         if ( evt.button === 0 ) {
 
-            if ( this.enabled && evt.getModifierState(this.activationKey) ) {
+            if ( this.enabled && evt.getModifierState( this.activationKey ) ) {
 
                 this.addListeners();
                 this.unFocus();
@@ -96,7 +96,7 @@ class ViewControls extends THREE.Object3D {
 
             } else {
 
-                var event = {type: "leftClick"};
+                const event = { type: "leftClick" };
 
                 for ( const property in intersects ) {
 
@@ -115,7 +115,7 @@ class ViewControls extends THREE.Object3D {
 
             evt.preventDefault();
 
-            var event = {type: "rightClick"};
+            const event = { type: "rightClick" };
 
             for ( const property in intersects ) {
 
@@ -125,7 +125,7 @@ class ViewControls extends THREE.Object3D {
             }
 
             event.originalEvent = evt;
-            this.dispatchEvent(event);
+            this.dispatchEvent( event );
 
         }
     }
@@ -136,7 +136,7 @@ class ViewControls extends THREE.Object3D {
 
     handleMouseMove( evt ) {
 
-        if (!this.enabled) return;
+        if ( !this.enabled ) return;
 
         const x = evt.movementX;
         const y = evt.movementY;
@@ -168,7 +168,7 @@ class ViewControls extends THREE.Object3D {
 
     handleMouseWheel( evt ) {
 
-        if (!this.enabled) return;
+        if ( !this.enabled ) return;
 
         evt.preventDefault();
 
@@ -178,14 +178,14 @@ class ViewControls extends THREE.Object3D {
         }
 
         this.animation = null;
-        var direction = Math.sign(evt.deltaY);
-        var wheelAmount = direction * this.wheelDollySpeed;
+        const direction = Math.sign( evt.deltaY );
+        const wheelAmount = direction * this.wheelDollySpeed;
 
         this.dolly( wheelAmount );
     }
 
     dolly( amount ) {
-        var dollyAmount = THREE.MathUtils.clamp( amount * this.camera.position.z,
+        const dollyAmount = THREE.MathUtils.clamp( amount * this.camera.position.z,
                 -this.maxDollySpeed, this.maxDollySpeed );
 
         if ( this.camera.position.z > 0 ) {
@@ -210,7 +210,7 @@ class ViewControls extends THREE.Object3D {
         camera.quaternion.slerp( this.focusQuaternion, this.focusIncrement );
         this.focusIncrement += this.focusSpeed;
         this.focusIterations += 1;
-        var d = THREE.Vector3.prototype.manhattanDistanceTo.call( this, camera.quaternion, this.focusQuaternion );
+        const d = THREE.Vector3.prototype.manhattanDistanceTo.call( this, camera.quaternion, this.focusQuaternion );
         if ( d < this.distanceTolerance || this.focusIterations > this.maxFocusIterations ) {
             this.focused = true;
             this.focusIncrement = 0;
@@ -265,16 +265,16 @@ class ViewControls extends THREE.Object3D {
 
     update() {
 
-        if (!this.enabled) return;
+        if ( !this.enabled ) return;
 
         if ( this.animation ) {
             this.animation();
         }
 
         if ( this.focused ) {
-            this.rotateY( -this.movementY  * this.rotationSpeed);
+            this.rotateY( -this.movementY  * this.rotationSpeed );
             this.cameraHolder.rotateX( -this.movementX * this.rotationSpeed );
-            this.dolly( this.movementZ  * this.rotationSpeed);
+            this.dolly( this.movementZ * this.rotationSpeed );
         }
 
         this.movementX *= this.damper;

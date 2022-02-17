@@ -61,34 +61,30 @@ function init() {
 
     window.addEventListener( 'resize', onWindowResize, false );
 
-    function Sign( textMaterial ) {
+    class Sign extends THREE.Mesh  {
 
-        var signFrameMaterial = new THREE.MeshStandardMaterial( { color: 0x8B6914 } );
-        THREE.Mesh.apply( this, [
-            new THREE.BoxBufferGeometry( 0.1, 2, 0.1 ),
-            signFrameMaterial
-        ] );
+        constructor( textMaterial ) {
+            var signFrameMaterial = new THREE.MeshStandardMaterial( { color: 0x8B6914 } );
+            super(new THREE.BoxBufferGeometry( 0.1, 2, 0.1 ), signFrameMaterial);
 
-        this.frame = new THREE.Mesh(
-            new THREE.BoxBufferGeometry( 2.1, 0.1, 1.1 ),
-            signFrameMaterial
-        );
-        this.add( this.frame );
-        this.frame.position.y += 1;
-        this.frame.rotation.x = 0.75;
+            this.frame = new THREE.Mesh(
+                new THREE.BoxBufferGeometry( 2.1, 0.1, 1.1 ),
+                signFrameMaterial
+            );
+            this.add( this.frame );
+            this.frame.position.y += 1;
+            this.frame.rotation.x = 0.75;
 
-        var text = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry( 2, 1 ),
-            new THREE.MeshStandardMaterial( { map: textMaterial } )
-        );
-        text.rotation.x = - Math.PI / 2;
-        text.position.y += 0.07;
-        this.frame.add( text );
+            var text = new THREE.Mesh(
+                new THREE.PlaneBufferGeometry( 2, 1 ),
+                new THREE.MeshStandardMaterial( { map: textMaterial } )
+            );
+            text.rotation.x = - Math.PI / 2;
+            text.position.y += 0.07;
+            this.frame.add( text );
 
-}
-
-    Sign.prototype = Object.create( THREE.Mesh.prototype );
-    Sign.prototype.constructor = Sign;
+        }
+    }
 
     var instructionsJustAlt = new THREE.TextureLoader().load( "./textures/instructionsJustAlt.png" );
     var sign = new Sign( instructionsJustAlt );

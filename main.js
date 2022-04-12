@@ -15,6 +15,7 @@ function init() {
     scene.background = new THREE.Color( 0xADD8E6 );
 
     renderer = new THREE.WebGLRenderer( { antialias: true } );
+    renderer.shadowMap.enabled = true;
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
@@ -22,40 +23,52 @@ function init() {
 
     // remaining code in this block is for various scene items
 
-    var ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.4 );
+    var ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.5 );
     scene.add( ambientLight );
 
-    var directionalLight = new THREE.DirectionalLight( 0xFFEEDD, 0.6 );
-    directionalLight.position.set( 10, 10, 10 );
+    var directionalLight = new THREE.DirectionalLight( 0xFFEEDD, 0.5 );
+    directionalLight.position.set( 1, 10, 3 );
+    directionalLight.castShadow = true;
+    directionalLight.shadow.camera.far = 200000;
+    const shadowCamDimension = 10;
+    directionalLight.shadow.camera.left = -shadowCamDimension;
+    directionalLight.shadow.camera.right = shadowCamDimension;
+    directionalLight.shadow.camera.bottom = -shadowCamDimension;
+    directionalLight.shadow.camera.top = shadowCamDimension;
+    directionalLight.shadow.camera.updateProjectionMatrix();
+
     scene.add( directionalLight );
 
     var grassTexture = new THREE.TextureLoader().load( "./textures/grass.jpg" );
     grassTexture.wrapS = THREE.RepeatWrapping;
     grassTexture.wrapT = THREE.RepeatWrapping;
-    grassTexture.repeat.set( 15, 15 );
+    grassTexture.repeat.set( 25, 25 );
 
     var floor = new THREE.Mesh(
         new THREE.PlaneBufferGeometry( 200, 200 ),
         new THREE.MeshStandardMaterial( { map: grassTexture } )
     );
     floor.rotateX( - Math.PI / 2 );
-
-    floor.position.set( 0, 0, 0 );
+    floor.receiveShadow = true;
     scene.add( floor );
 
     var wallTexture = new THREE.TextureLoader().load( "./textures/01murocrep512.jpg" );
     var boxGeometry = new THREE.BoxBufferGeometry( 2, 2, 2 );
     var boxMaterial = new THREE.MeshStandardMaterial( { color: 0xeeeeee, map: wallTexture } );
 
-    var box1 = new THREE.Mesh( boxGeometry, boxMaterial );
+    var box = new THREE.Mesh( boxGeometry, boxMaterial );
+    box.castShadow = true;
+    box.receiveShadow = true;
+
+    var box1 = box.clone();
     box1.position.set( 3, 1, 0 );
     scene.add( box1 );
 
-    var box2 = new THREE.Mesh( boxGeometry, boxMaterial );
+    var box2 = box.clone();
     box2.position.set( - 3, 1, 0 );
     scene.add( box2 );
 
-    var box3 = new THREE.Mesh( boxGeometry, boxMaterial );
+    var box3 = box.clone();
     box3.position.set( 0, 6, 0 );
     scene.add( box3 );
 
@@ -75,6 +88,7 @@ function init() {
             this.frame.position.y += 1;
             this.frame.rotation.x = 0.75;
 
+            textMaterial.anisotropy = 2;
             var text = new THREE.Mesh(
                 new THREE.PlaneBufferGeometry( 2, 1 ),
                 new THREE.MeshStandardMaterial( { map: textMaterial } )
@@ -82,6 +96,9 @@ function init() {
             text.rotation.x = - Math.PI / 2;
             text.position.y += 0.07;
             this.frame.add( text );
+            this.frame.castShadow = true;
+            this.castShadow = true;
+            this.receiveShadow = true;
 
         }
     }
@@ -90,11 +107,6 @@ function init() {
     var sign = new Sign( instructionsJustAlt );
     scene.add( sign );
     sign.position.set( 0, 1, 6 );
-
-    var pointLight1 = new THREE.PointLight( 0xFFEEDD, 0.4 );
-    pointLight1.distance = 6;
-    pointLight1.position.set( 0, 3.4, - 6.5 );
-    scene.add( pointLight1 );
 
     var instructionsAltControl = new THREE.TextureLoader().load( "./textures/instructionsAltControl.png" );
     var sign2 = new Sign( instructionsAltControl );
@@ -107,11 +119,6 @@ function init() {
     scene.add( sign3 );
     sign3.position.set( 6, 1, 0 );
     sign3.rotation.y = Math.PI / 2;
-
-    var pointLight2 = new THREE.PointLight( 0xFFEEDD, 0.4 );
-    pointLight2.distance = 6;
-    pointLight2.position.set( - 6.5, 3.4, 0 );
-    scene.add( pointLight2 );
 
     var instructionsEscape = new THREE.TextureLoader().load( "./textures/instructionsEscape.png" );
     var sign4 = new Sign( instructionsEscape );

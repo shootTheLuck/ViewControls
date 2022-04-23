@@ -23,7 +23,7 @@ function init() {
 
     // remaining code in this block is for various scene items
 
-    var ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.5 );
+    const ambientLight = new THREE.HemisphereLight( 0xFFFFFF, 0x666666, 0.65 );
     scene.add( ambientLight );
 
     var directionalLight = new THREE.DirectionalLight( 0xFFEEDD, 0.5 );

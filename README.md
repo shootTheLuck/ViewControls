@@ -6,14 +6,14 @@ Demo with instructions is [here.](https://shoottheluck.github.io/ViewControls)
 
 ***\*\*\*Important Note\*\*\****
 
-The activationKey property for viewControls is the <kbd>Alt</kbd> by default.<br>
+The default activationKey property for viewControls is the <kbd>Alt</kbd> key.<br>
 On at least some operating systems (Lubuntu for instance), using the <kbd>Alt</kbd> key with mouse drag<br>
 is reserved for moving windows across the screen.
 
 This can be disabled system-wide (in Lubuntu at least) by editing ~/.config/openbox/lubuntu-rc.xml <br>
 and commenting-out items under the line \<context name="Frame"\> that begin with \<mousebind button="A... <br>
 
-Alternatively, set the activationKey property to an alternative such as "OS" (for the "windows" key) <br>
+Alternatively, you can set the activationKey property to a key such as "OS" (for the "windows" key) <br>
 and use that instead of <kbd>Alt</kbd>:
 
 ```javascript

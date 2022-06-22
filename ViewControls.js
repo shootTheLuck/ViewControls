@@ -6,11 +6,11 @@ class ViewControls extends THREE.Object3D {
     constructor( camera, scene, domElement, opts = {} ) {
 
         if ( !camera.isCamera ) {
-            console.error( "ViewControls requires a THREE camera as second parameter" );
+            console.error( "ViewControls requires a THREE camera as first parameter" );
         }
 
         if ( !scene.isScene ) {
-            console.error( "ViewControls requires a THREE scene as third parameter" );
+            console.error( "ViewControls requires a THREE scene as second parameter" );
         }
 
         if ( !(domElement instanceof HTMLElement) ) {

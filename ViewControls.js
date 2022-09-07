@@ -75,7 +75,6 @@ class ViewControls extends THREE.Object3D {
             evt.preventDefault();
         } );
 
-        this.scene.add( this );
         this.enabled = true;
 
     }
@@ -280,6 +279,8 @@ class ViewControls extends THREE.Object3D {
         this.movementX *= this.damper;
         this.movementY *= this.damper;
         this.movementZ *= this.damper;
+
+        this.updateMatrixWorld();
     }
 
     saveState() {

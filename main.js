@@ -1,4 +1,5 @@
-
+import {FPSMeter} from "../js/mjs/FPSMeter.js";
+window.fpsMeter = new FPSMeter();
 import { ViewControls } from "./ViewControls.js";
 var camera, scene, renderer, viewControls;
 
@@ -12,7 +13,9 @@ function init() {
     camera.lookAt( new THREE.Vector3( - 0.0, 1.5, 0 ) );
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xADD8E6 );
+    // scene.background = new THREE.Color( 0xADD8E6 );
+    // scene.background = new THREE.Color( 0x88AAFF );
+    scene.background = new THREE.Color( 0xAACCFF );
 
     renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.shadowMap.enabled = true;
@@ -35,7 +38,7 @@ function init() {
     directionalLight.shadow.camera.right = shadowCamDimension;
     directionalLight.shadow.camera.bottom = -shadowCamDimension;
     directionalLight.shadow.camera.top = shadowCamDimension;
-    directionalLight.shadow.camera.updateProjectionMatrix();
+    // directionalLight.shadow.camera.updateProjectionMatrix();
 
     scene.add( directionalLight );
 
@@ -54,7 +57,7 @@ function init() {
 
     var wallTexture = new THREE.TextureLoader().load( "./textures/01murocrep512.jpg" );
     var boxGeometry = new THREE.BoxBufferGeometry( 2, 2, 2 );
-    var boxMaterial = new THREE.MeshStandardMaterial( { color: 0xeeeeee, map: wallTexture } );
+    var boxMaterial = new THREE.MeshStandardMaterial( { map: wallTexture } );
 
     var box = new THREE.Mesh( boxGeometry, boxMaterial );
     box.castShadow = true;
@@ -76,7 +79,7 @@ function init() {
 
     class Sign extends THREE.Mesh  {
 
-        constructor( textMaterial ) {
+        constructor( textMap ) {
             var signFrameMaterial = new THREE.MeshStandardMaterial( { color: 0x8B6914 } );
             super(new THREE.BoxBufferGeometry( 0.1, 2, 0.1 ), signFrameMaterial);
 
@@ -88,10 +91,11 @@ function init() {
             this.frame.position.y += 1;
             this.frame.rotation.x = 0.75;
 
-            textMaterial.anisotropy = 2;
+            textMap.anisotropy = 2;
+            textMap.minFilter = THREE.LinearMipmapLinearFilter;
             var text = new THREE.Mesh(
                 new THREE.PlaneBufferGeometry( 2, 1 ),
-                new THREE.MeshStandardMaterial( { map: textMaterial } )
+                new THREE.MeshStandardMaterial( { map: textMap } )
             );
             text.rotation.x = - Math.PI / 2;
             text.position.y += 0.07;
@@ -103,31 +107,31 @@ function init() {
         }
     }
 
-    var instructionsJustAlt = new THREE.TextureLoader().load( "./textures/instructionsJustAlt.png" );
-    var sign = new Sign( instructionsJustAlt );
-    scene.add( sign );
-    sign.position.set( 0, 1, 6 );
+    const htmlMesh1 = new THREE.HTMLMesh( document.getElementById("alt") );
+    const sign1 = new Sign( htmlMesh1.material.map );
+    scene.add( sign1 );
+    sign1.position.set( 0, 1, 6 );
 
-    var instructionsAltControl = new THREE.TextureLoader().load( "./textures/instructionsAltControl.png" );
-    var sign2 = new Sign( instructionsAltControl );
+    const htmlMesh2 = new THREE.HTMLMesh( document.getElementById( "altCtrl") );
+    const sign2 = new Sign( htmlMesh2.material.map );
     scene.add( sign2 );
-    sign2.position.set( 0, 1, - 6 );
+    sign2.position.set( 0, 1, -6 );
     sign2.rotation.y = Math.PI;
 
-    var instructionsLookUp = new THREE.TextureLoader().load( "./textures/instructionsLookUp.png" );
-    var sign3 = new Sign( instructionsLookUp );
+    const htmlMesh3 = new THREE.HTMLMesh( document.getElementById( "lookUp") );
+    const sign3 = new Sign( htmlMesh3.material.map );
     scene.add( sign3 );
     sign3.position.set( 6, 1, 0 );
     sign3.rotation.y = Math.PI / 2;
 
-    var instructionsEscape = new THREE.TextureLoader().load( "./textures/instructionsEscape.png" );
-    var sign4 = new Sign( instructionsEscape );
+    const htmlMesh4 = new THREE.HTMLMesh( document.getElementById( "escape") );
+    const sign4 = new Sign( htmlMesh4.material.map );
     scene.add( sign4 );
-    sign4.position.set( - 6, 1, 0 );
-    sign4.rotation.y = - Math.PI / 2;
+    sign4.position.set( -6, 1, 0 );
+    sign4.rotation.y = -Math.PI / 2;
 
-    var instructionsHaveYouSeen = new THREE.TextureLoader().load( "./textures/instructionsHaveYouSeen.png" );
-    var sign5 = new Sign( instructionsHaveYouSeen );
+    const htmlMesh5 = new THREE.HTMLMesh( document.getElementById( "haveYouSeen") );
+    const sign5 = new Sign( htmlMesh5.material.map );
     scene.add( sign5 );
     sign5.position.set( 0, 6, 0 );
     sign5.rotation.y = - Math.PI / 2;

@@ -9,8 +9,59 @@
             overflow: hidden;
             color: black;
         }
+
+        kbd {
+            background-color: #f2f2f2;
+            border-radius: 0.25em;
+            border: 1px solid #aaaaaa;
+            padding: 5px 5px;
+            margin: 5px;
+        }
+
+        .instructions {
+            font-size: 24px;
+            position: absolute;
+            background-color: #FFFFE0;
+            line-height: 2em;
+            padding: 7em 1.5em 6em 1.5em;
+            text-align: center;
+            visibility: hidden;
+        }
+
+        .not {
+            height: 24px;
+
+        }
     </style>
     <script src="./lib/three.min.js"></script>
+    <script src="./lib/HTMLMesh.js"></script>
+
+    <div id="alt" class="instructions">
+    Holding the<kbd>Alt</kbd> key, click (and hold) your mouse on an object.<br>
+    Move the mouse left or right to orbit around the object.<br>
+    Move the mouse up or down to pan in or out.
+    </div>
+
+    <div id="altCtrl" class="instructions">
+    Holding the<kbd>Alt</kbd>+<kbd>Ctrl</kbd> keys, click (and hold) your mouse on an object.<br>
+    Moving the mouse left or right still orbits around the object<br>
+    but moving up or down now rotates over or under.
+    </div>
+
+    <div id="escape" class="instructions">
+    Press the<kbd>Esc</kbd>key to return the camera to its<br>
+    original position and rotation!
+    </div>
+
+    <div id="lookUp" class="instructions">
+    Try looking on top of the upper block.
+    </div>
+
+    <div id="haveYouSeen" class="instructions">
+    Have you seen all four signs?<br>
+    If so, that's it!
+    </div>
+
 </head>
 <body>
 

@@ -1,5 +1,4 @@
-import {FPSMeter} from "../js/mjs/FPSMeter.js";
-window.fpsMeter = new FPSMeter();
+
 import { ViewControls } from "./ViewControls.js";
 var camera, scene, renderer, viewControls;
 

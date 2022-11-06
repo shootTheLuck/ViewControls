@@ -1,5 +1,10 @@
 
+import * as THREE from "three";
 import { RayPicker } from "./RayPicker.js";
+
+const _xAxis = new THREE.Vector3(1, 0, 0);
+const _yAxis = new THREE.Vector3(0, 1, 0);
+const _zAxis = new THREE.Vector3(0, 0, 1);
 
 class ViewControls extends THREE.Object3D {
 
@@ -46,9 +51,11 @@ class ViewControls extends THREE.Object3D {
         this.oldPosition = camera.position.clone();
         this.oldQuaternion = camera.quaternion.clone();
         this.oldParent = camera.parent || scene;
+        this.viewObject = null;
+        this.viewPosition = new THREE.Vector3();
 
         this.focusIncrement = 0;
-        this.focusSpeed = 0.03;
+        this.focusSpeed = 1;
 
         this.wheelDollySpeed = 0.1;
         this.focusMatrix = new THREE.Matrix4();
@@ -76,6 +83,7 @@ class ViewControls extends THREE.Object3D {
         } );
 
         this.enabled = true;
+        this.focusedEvent = {type: "focused"};
 
     }
 
@@ -89,9 +97,8 @@ class ViewControls extends THREE.Object3D {
 
             if ( this.enabled && evt.getModifierState( this.activationKey ) ) {
 
-                this.addListeners();
-                this.unFocus();
-                this.startFocus( this.camera, intersects.point );
+                this.addDOMListeners();
+                this.beginPanCamera( intersects.object, intersects.point );
 
             } else {
 
@@ -162,7 +169,7 @@ class ViewControls extends THREE.Object3D {
     }
 
     handleMouseUp( evt ) {
-        this.removeListeners();
+        this.removeDOMListeners();
     }
 
     handleMouseWheel( evt ) {
@@ -195,7 +202,7 @@ class ViewControls extends THREE.Object3D {
 
     handleKeyUp( evt ) {
         if ( evt.key === this.activationKey ) {
-            this.removeListeners();
+            this.removeDOMListeners();
         }
     }
 
@@ -205,74 +212,92 @@ class ViewControls extends THREE.Object3D {
         }
     }
 
-    panToObject( camera, position ) {
-        camera.quaternion.slerp( this.focusQuaternion, this.focusIncrement );
-        this.focusIncrement += this.focusSpeed;
+    panCamera( delta = 0.017 ) {
+        this.camera.quaternion.slerp( this.focusQuaternion, this.focusIncrement );
+        this.focusIncrement += this.focusSpeed * delta;
         this.focusIterations += 1;
-        const d = THREE.Vector3.prototype.manhattanDistanceTo.call( this, camera.quaternion, this.focusQuaternion );
-        if ( d < this.distanceTolerance || this.focusIterations > this.maxFocusIterations ) {
+
+        if ( this.focusIterations > this.maxFocusIterations ) {
+
             this.focused = true;
-            this.focusIncrement = 0;
-            this.position.copy( position );
-            this.cameraHolder.lookAt( camera.position );
-            this.cameraHolder.attach( camera );
+            this.position.copy( this.viewPosition );
+            this.cameraHolder.lookAt( this.camera.position );
+            this.cameraHolder.attach( this.camera );
             this.animation = null;
+
+            const event = { type: "focused", object: this.viewObject, point: this.viewPosition };
+            this.dispatchEvent( event );
+
         } else {
-            this.animation = this.panToObject.bind( this, camera, position );
+
+            this.animation = this.panCamera.bind( this );
+
         }
     }
 
-    startFocus( camera, position ) {
-        this.focusIterations = 0;
-        this.scene.attach( camera );
-        this.focusMatrix.lookAt( camera.position, position, camera.up );
-        this.focusQuaternion.setFromRotationMatrix( this.focusMatrix );
-        this.panToObject( camera, position );
-    }
-
-    unFocus() {
-        this.focusIncrement = 0;
+    beginPanCamera( object, position ) {
         this.focused = false;
-        this.oldParent.attach( this.camera );
+        this.focusIncrement = 0;
+        this.focusIterations = 0;
+        this.scene.attach( this.camera );
+        this.focusMatrix.lookAt( this.camera.position, position, this.camera.up );
+        this.focusQuaternion.setFromRotationMatrix( this.focusMatrix );
+        this.viewObject = object;
+        this.viewPosition.copy( position );
+        this.panCamera();
     }
 
     resetCamera() {
-        if ( this.camera.position.manhattanDistanceTo( this.oldPosition ) < this.distanceTolerance ) {
+        this.camera.position.lerp( this.oldPosition, 0.11 );
+        this.camera.quaternion.slerp( this.oldQuaternion, 0.055 );
+        this.focusIterations += 1;
+
+        // if ( this.camera.position.manhattanDistanceTo( this.oldPosition ) < this.distanceTolerance ) {
+        if ( this.focusIterations > this.maxFocusIterations * 10 ) {
+
             this.camera.position.copy( this.oldPosition );
             this.camera.quaternion.copy( this.oldQuaternion );
             this.animation = null;
+
         } else {
+
             this.animation = this.resetCamera.bind( this );
-            this.camera.position.lerp( this.oldPosition, 0.11 );
-            this.camera.quaternion.slerp( this.oldQuaternion, 0.11 );
+
         }
     }
 
-    addListeners() {
+    addDOMListeners() {
         this.domElement.requestPointerLock();
         this.domElement.addEventListener( "mousemove", this.mouseMoveListener );
         this.domElement.addEventListener( "mouseup", this.mouseUpListener );
         this.domElement.addEventListener( "keyup", this.keyUpListener );
     }
 
-    removeListeners() {
+    removeDOMListeners() {
         document.exitPointerLock();
         this.domElement.removeEventListener( "mousemove", this.mouseMoveListener );
         this.domElement.removeEventListener( "mouseup", this.mouseUpListener );
         this.domElement.removeEventListener( "keyup", this.keyUpListener );
     }
 
-    update() {
+    update( delta = 0.017 ) {
 
         if ( !this.enabled ) return;
 
         if ( this.animation ) {
-            this.animation();
+            this.animation( delta );
+        }
+
+        if ( !_yAxis.equals( this.camera.up ) ) {
+            _yAxis.copy(this.camera.up);
+            this.cameraHolder.up.copy(this.camera.up);
         }
 
         if ( this.focused ) {
-            this.rotateY( -this.movementY  * this.rotationSpeed );
-            this.cameraHolder.rotateX( -this.movementX * this.rotationSpeed );
+            // this.rotateY( -this.movementY  * this.rotationSpeed );
+            // this.cameraHolder.rotateX( -this.movementX * this.rotationSpeed );
+            this.rotateOnWorldAxis( _yAxis, -this.movementY  * this.rotationSpeed );
+            this.cameraHolder.rotateOnAxis( _xAxis, -this.movementX * this.rotationSpeed );
             this.dolly( this.movementZ * this.rotationSpeed );
         }
 
@@ -290,9 +315,10 @@ class ViewControls extends THREE.Object3D {
     }
 
     exit() {
-        this.unFocus();
+        this.focusIterations = 0;
+        this.oldParent.attach( this.camera );
         this.resetCamera();
-        this.removeListeners();
+        this.removeDOMListeners();
     }
 }
 

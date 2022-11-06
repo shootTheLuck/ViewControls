@@ -1,4 +1,6 @@
 
+import * as THREE from "three";
+
 class RayPicker extends THREE.Raycaster {
 
     constructor( layer ) {
@@ -8,7 +10,7 @@ class RayPicker extends THREE.Raycaster {
         this.params.Points.threshold = 1;
         this.params.Line.threshold = 3;
 
-        /*public mouseCoords are Vector3 to allow camera.unproject */
+        /* public mouseCoords are Vector3 to allow camera.unproject */
         this.mouseCoords = new THREE.Vector3();
         this.centerCoords = new THREE.Vector3();
         this.intersects = [];

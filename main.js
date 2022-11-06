@@ -1,14 +1,16 @@
 
+import * as THREE from "three";
+import { HTMLMesh } from "./lib/HTMLMesh.js";
 import { ViewControls } from "./ViewControls.js";
-var camera, scene, renderer, viewControls;
+var camera, scene, renderer, clock, viewControls;
 
 init();
 animate();
 
 function init() {
 
-    camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 100000 );
-    camera.position.set( 0.2, 3.31, 7.94 );
+    camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight, 0.01, 100000 );
+    camera.position.set( 0.2, 3.31, 8.25 );
     camera.lookAt( new THREE.Vector3( 0.0, 1.5, 0 ) );
 
     scene = new THREE.Scene();
@@ -20,6 +22,8 @@ function init() {
     renderer.shadowMap.enabled = true;
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
+
+    clock = new THREE.Clock();
 
     viewControls = new ViewControls( camera, scene, renderer.domElement );
 
@@ -106,30 +110,30 @@ function init() {
         }
     }
 
-    const htmlMesh1 = new THREE.HTMLMesh( document.getElementById( "alt" ) );
+    const htmlMesh1 = new HTMLMesh( document.getElementById( "alt" ) );
     const sign1 = new Sign( htmlMesh1.material.map );
     scene.add( sign1 );
     sign1.position.set( 0, 1, 6 );
 
-    const htmlMesh2 = new THREE.HTMLMesh( document.getElementById( "altCtrl" ) );
+    const htmlMesh2 = new HTMLMesh( document.getElementById( "altCtrl" ) );
     const sign2 = new Sign( htmlMesh2.material.map );
     scene.add( sign2 );
     sign2.position.set( 0, 1, -6 );
     sign2.rotation.y = Math.PI;
 
-    const htmlMesh3 = new THREE.HTMLMesh( document.getElementById( "lookUp" ) );
+    const htmlMesh3 = new HTMLMesh( document.getElementById( "lookUp" ) );
     const sign3 = new Sign( htmlMesh3.material.map );
     scene.add( sign3 );
     sign3.position.set( 6, 1, 0 );
     sign3.rotation.y = Math.PI / 2;
 
-    const htmlMesh4 = new THREE.HTMLMesh( document.getElementById( "escape" ) );
+    const htmlMesh4 = new HTMLMesh( document.getElementById( "escape" ) );
     const sign4 = new Sign( htmlMesh4.material.map );
     scene.add( sign4 );
     sign4.position.set( -6, 1, 0 );
     sign4.rotation.y = -Math.PI / 2;
 
-    const htmlMesh5 = new THREE.HTMLMesh( document.getElementById( "haveYouSeen") );
+    const htmlMesh5 = new HTMLMesh( document.getElementById( "haveYouSeen") );
     const sign5 = new Sign( htmlMesh5.material.map );
     scene.add( sign5 );
     sign5.position.set( 0, 6, 0 );
@@ -140,8 +144,8 @@ function init() {
 }
 
 function animate() {
-
-    viewControls.update();
+    const delta = clock.getDelta();
+    viewControls.update(delta);
     renderer.render( scene, camera );
     requestAnimationFrame( animate );
 

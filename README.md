@@ -6,15 +6,15 @@ Demo with instructions is [here.](https://shoottheluck.github.io/ViewControls)
 
 ***\*\*\*Important Note\*\*\****
 
-The default activationKey property for viewControls is the <kbd>Alt</kbd> key.<br>
-On at least some operating systems (Lubuntu for instance), using the <kbd>Alt</kbd> key with mouse drag<br>
+The default activationKey for viewControls is the <kbd>Alt</kbd> key.<br>
+On some operating systems (Lubuntu for instance), using the <kbd>Alt</kbd> key with mouse drag<br>
 is reserved for moving windows across the screen.
 
 This can be disabled system-wide (in Lubuntu at least) by editing ~/.config/openbox/lubuntu-rc.xml <br>
 and commenting-out items under the line \<context name="Frame"\> that begin with \<mousebind button="A... <br>
 
-Alternatively, you can set the activationKey property to a key such as "OS" (for the "windows" key) <br>
-and use that instead of <kbd>Alt</kbd>:
+Alternatively, you can set the activationKey to a key such as "OS" (the "windows" key) <br>
+and use that instead:
 
 ```javascript
 controls = new ViewControls( camera, scene, renderer.domElement, { activationKey: "OS" } );

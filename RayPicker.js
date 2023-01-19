@@ -41,7 +41,7 @@ class RayPicker extends THREE.Raycaster {
             return this.intersects;
         }
 
-        return false;
+        return null;
     }
 
     /* return closest of all raycaster intersects, allowing for
@@ -80,7 +80,7 @@ class RayPicker extends THREE.Raycaster {
 
         }
 
-        return false;
+        return null;
 
     }
 

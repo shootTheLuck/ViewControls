@@ -48,9 +48,9 @@ class ViewControls extends THREE.Object3D {
         this.add( this.cameraHolder );
 
         this.rayPicker = new RayPicker();
-        this.oldPosition = camera.position.clone();
-        this.oldQuaternion = camera.quaternion.clone();
-        this.oldParent = camera.parent || scene;
+        this.resetPosition = camera.position.clone();
+        this.resetQuaternion = camera.quaternion.clone();
+        this.resetParent = camera.parent || scene;
         this.viewObject = null;
         this.viewPosition = new THREE.Vector3();
 
@@ -81,6 +81,7 @@ class ViewControls extends THREE.Object3D {
         this.domElement.addEventListener( "contextmenu", ( evt ) => {
             evt.preventDefault();
         } );
+        // document.addEventListener( "wheel", this.mouseWheelListener );
 
         this.enabled = true;
         this.focusedEvent = {type: "focused"};
@@ -90,28 +91,23 @@ class ViewControls extends THREE.Object3D {
     handleMouseDown( evt ) {
 
         this.rayPicker.setFromMouseEventAndCamera( evt, this.camera );
-        let intersects = this.rayPicker.pick( this.scene );
-        if ( !intersects ) return;
+        let intersect = this.rayPicker.pick( this.scene );
 
         if ( evt.button === 0 ) {
 
             if ( this.enabled && evt.getModifierState( this.activationKey ) ) {
 
-                this.addDOMListeners();
-                this.beginPanCamera( intersects.object, intersects.point );
+                if ( intersect ) {
+                    this.addDOMListeners();
+                    this.beginPanCamera( intersect.object, intersect.point );
+                }
 
             } else {
 
                 const event = { type: "leftClick" };
 
-                for ( const property in intersects ) {
-
-                    if ( intersects.hasOwnProperty( property ) ) {
-                        event[ property ] = intersects[ property ];
-                    }
-                }
-
-                event.originalEvent = evt;
+                event.mouseEvent = evt;
+                event.intersect = intersect;
                 this.dispatchEvent( event );
 
             }
@@ -123,14 +119,8 @@ class ViewControls extends THREE.Object3D {
 
             const event = { type: "rightClick" };
 
-            for ( const property in intersects ) {
-
-                if ( intersects.hasOwnProperty( property ) ) {
-                    event[ property ] = intersects[ property ];
-                }
-            }
-
-            event.originalEvent = evt;
+            event.mouseEvent = evt;
+            event.intersect = intersect;
             this.dispatchEvent( event );
 
         }
@@ -176,18 +166,24 @@ class ViewControls extends THREE.Object3D {
 
         if ( !this.enabled ) return;
 
-        evt.preventDefault();
+        const activeElement = document.activeElement;
 
-        /* if something else needs the mouse wheel it can use ctrlKey */
-        if ( evt.ctrlKey && !evt.activationKey ) {
-            return;
+        if ( activeElement === this.domElement || activeElement === document.body ) {
+
+            evt.preventDefault();
+
+            /* if something else needs the mouse wheel it can use ctrlKey */
+            if ( evt.ctrlKey && !evt.activationKey ) {
+                return;
+            }
+
+            this.animation = null;
+            const direction = Math.sign( evt.deltaY );
+            const wheelAmount = direction * this.wheelDollySpeed;
+
+            this.dolly( wheelAmount );
         }
 
-        this.animation = null;
-        const direction = Math.sign( evt.deltaY );
-        const wheelAmount = direction * this.wheelDollySpeed;
-
-        this.dolly( wheelAmount );
     }
 
     dolly( amount ) {
@@ -248,15 +244,15 @@ class ViewControls extends THREE.Object3D {
     }
 
     resetCamera() {
-        this.camera.position.lerp( this.oldPosition, 0.11 );
-        this.camera.quaternion.slerp( this.oldQuaternion, 0.055 );
+        this.camera.position.lerp( this.resetPosition, 0.11 );
+        this.camera.quaternion.slerp( this.resetQuaternion, 0.055 );
         this.focusIterations += 1;
 
-        // if ( this.camera.position.manhattanDistanceTo( this.oldPosition ) < this.distanceTolerance ) {
+        // if ( this.camera.position.manhattanDistanceTo( this.resetPosition ) < this.distanceTolerance ) {
         if ( this.focusIterations > this.maxFocusIterations * 10 ) {
 
-            this.camera.position.copy( this.oldPosition );
-            this.camera.quaternion.copy( this.oldQuaternion );
+            this.camera.position.copy( this.resetPosition );
+            this.camera.quaternion.copy( this.resetQuaternion );
             this.animation = null;
 
         } else {
@@ -309,14 +305,14 @@ class ViewControls extends THREE.Object3D {
     }
 
     saveState() {
-        this.oldPosition = this.camera.position.clone();
-        this.oldQuaternion = this.camera.quaternion.clone();
-        this.oldParent = this.camera.parent || this.scene;
+        this.resetPosition = this.camera.position.clone();
+        this.resetQuaternion = this.camera.quaternion.clone();
+        this.resetParent = this.camera.parent || this.scene;
     }
 
     exit() {
         this.focusIterations = 0;
-        this.oldParent.attach( this.camera );
+        this.resetParent.attach( this.camera );
         this.resetCamera();
         this.removeDOMListeners();
     }

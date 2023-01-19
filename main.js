@@ -49,6 +49,7 @@ function init() {
     grassTexture.wrapS = THREE.RepeatWrapping;
     grassTexture.wrapT = THREE.RepeatWrapping;
     grassTexture.repeat.set( 25, 25 );
+    grassTexture.anisotropy = 2;
 
     var floor = new THREE.Mesh(
         new THREE.PlaneBufferGeometry( 200, 200 ),
@@ -59,6 +60,7 @@ function init() {
     scene.add( floor );
 
     var wallTexture = new THREE.TextureLoader().load( "./textures/01murocrep512.jpg" );
+    wallTexture.anisotropy = 2;
     var boxGeometry = new THREE.BoxBufferGeometry( 2, 2, 2 );
     var boxMaterial = new THREE.MeshStandardMaterial( { map: wallTexture } );
 
@@ -150,7 +152,6 @@ function animate() {
     requestAnimationFrame( animate );
 
 }
-
 
 function onWindowResize() {
 

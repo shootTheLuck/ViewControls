@@ -1,6 +1,6 @@
 
 import * as THREE from "three";
-import { HTMLMesh } from "./lib/HTMLMesh.js";
+import { HTMLMesh } from "three/examples/jsm/interactive/HTMLMesh.js";
 import { ViewControls } from "./ViewControls.js";
 var camera, scene, renderer, clock, viewControls;
 
@@ -52,7 +52,7 @@ function init() {
     grassTexture.anisotropy = 2;
 
     var floor = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry( 200, 200 ),
+        new THREE.PlaneGeometry( 200, 200 ),
         new THREE.MeshStandardMaterial( { map: grassTexture } )
     );
     floor.rotateX( - Math.PI / 2 );
@@ -61,7 +61,7 @@ function init() {
 
     var wallTexture = new THREE.TextureLoader().load( "./textures/01murocrep512.jpg" );
     wallTexture.anisotropy = 2;
-    var boxGeometry = new THREE.BoxBufferGeometry( 2, 2, 2 );
+    var boxGeometry = new THREE.BoxGeometry( 2, 2, 2 );
     var boxMaterial = new THREE.MeshStandardMaterial( { map: wallTexture } );
 
     var box = new THREE.Mesh( boxGeometry, boxMaterial );
@@ -86,10 +86,10 @@ function init() {
 
         constructor( textMap ) {
             var signFrameMaterial = new THREE.MeshStandardMaterial( { color: 0x8B6914 } );
-            super(new THREE.BoxBufferGeometry( 0.1, 2, 0.1 ), signFrameMaterial);
+            super(new THREE.BoxGeometry( 0.1, 2, 0.1 ), signFrameMaterial);
 
             this.frame = new THREE.Mesh(
-                new THREE.BoxBufferGeometry( 2.1, 0.1, 1.1 ),
+                new THREE.BoxGeometry( 2.1, 0.1, 1.1 ),
                 signFrameMaterial
             );
             this.add( this.frame );
@@ -99,7 +99,7 @@ function init() {
             textMap.anisotropy = 2;
             textMap.minFilter = THREE.LinearMipmapLinearFilter;
             var text = new THREE.Mesh(
-                new THREE.PlaneBufferGeometry( 2, 1 ),
+                new THREE.PlaneGeometry( 2, 1 ),
                 new THREE.MeshStandardMaterial( { map: textMap } )
             );
             text.rotation.x = - Math.PI / 2;

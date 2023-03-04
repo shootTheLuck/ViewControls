@@ -28,10 +28,10 @@ class ViewControls extends THREE.Object3D {
         this.rotationSpeed = opts.rotationSpeed || 0.02;
         this.accelerationRate = opts.accelerationRate || 0.1;
         this.damper = opts.damper || 0.5;
-        this.dollySpeed = opts.dollySpeed || 0.003;
+        this.dollySpeed = opts.dollySpeed || 0.003; // not used
         this.maxDollySpeed = opts.maxDollySpeed || Infinity;
         this.activationKey = opts.activationKey || "Alt";
-        this.distanceTolerance = opts.distanceTolerance || 0.002;
+        this.distanceTolerance = opts.distanceTolerance || 0.002; // not used right now
         this.minCameraDistance = opts.minCameraDistance || camera.near * 2;
 
         this.camera = camera;
@@ -63,7 +63,7 @@ class ViewControls extends THREE.Object3D {
         this.focused = false;
         this.animation = null;
         this.focusIterations = 0;
-        this.maxFocusIterations = 20;
+        this.maxFocusIterations = 60;
         this.movementX = 0;
         this.movementY = 0;
         this.movementZ = 0;
@@ -213,7 +213,8 @@ class ViewControls extends THREE.Object3D {
         this.focusIncrement += this.focusSpeed * delta;
         this.focusIterations += 1;
 
-        if ( this.focusIterations > this.maxFocusIterations ) {
+        // if ( this.focusIterations > this.maxFocusIterations ) {
+        if ( this.focusIncrement > 0.5 ) {
 
             this.focused = true;
             this.position.copy( this.viewPosition );
@@ -249,7 +250,8 @@ class ViewControls extends THREE.Object3D {
         this.focusIterations += 1;
 
         // if ( this.camera.position.manhattanDistanceTo( this.resetPosition ) < this.distanceTolerance ) {
-        if ( this.focusIterations > this.maxFocusIterations * 10 ) {
+        // if ( this.focusIterations > this.maxFocusIterations * 10 ) {
+        if ( this.focusIncrement > 0.5 ) {
 
             this.camera.position.copy( this.resetPosition );
             this.camera.quaternion.copy( this.resetQuaternion );
@@ -311,6 +313,7 @@ class ViewControls extends THREE.Object3D {
     }
 
     exit() {
+        this.focusIncrement = 0;
         this.focusIterations = 0;
         this.resetParent.attach( this.camera );
         this.resetCamera();

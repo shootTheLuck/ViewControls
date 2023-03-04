@@ -214,6 +214,8 @@ class ViewControls extends THREE.Object3D {
         this.focusIterations += 1;
 
         // if ( this.focusIterations > this.maxFocusIterations ) {
+        // slerp to 1.0 takes too long and doesn't make much difference so
+        // stop at > 0.5...
         if ( this.focusIncrement > 0.5 ) {
 
             this.focused = true;
@@ -251,6 +253,8 @@ class ViewControls extends THREE.Object3D {
 
         // if ( this.camera.position.manhattanDistanceTo( this.resetPosition ) < this.distanceTolerance ) {
         // if ( this.focusIterations > this.maxFocusIterations * 10 ) {
+        // slerp to 1.0 takes too long and doesn't make much difference so
+        // stop at > 0.5...
         if ( this.focusIncrement > 0.5 ) {
 
             this.camera.position.copy( this.resetPosition );

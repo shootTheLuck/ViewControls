@@ -31,8 +31,8 @@ class ViewControls extends THREE.Object3D {
         this.dollySpeed = opts.dollySpeed || 0.003; // not used
         this.maxDollySpeed = opts.maxDollySpeed || Infinity;
         this.activationKey = opts.activationKey || "Alt";
-        this.distanceTolerance = opts.distanceTolerance || 0.002; // not used right now
         this.minCameraDistance = opts.minCameraDistance || camera.near * 2;
+        this.maxCameraDistance = opts.maxCameraDistance || camera.far * 0.75;
 
         this.camera = camera;
         this.scene = scene;
@@ -62,8 +62,6 @@ class ViewControls extends THREE.Object3D {
         this.focusQuaternion = new THREE.Quaternion();
         this.focused = false;
         this.animation = null;
-        this.focusIterations = 0;
-        this.maxFocusIterations = 60;
         this.movementX = 0;
         this.movementY = 0;
         this.movementZ = 0;
@@ -97,7 +95,7 @@ class ViewControls extends THREE.Object3D {
 
             if ( this.enabled && evt.getModifierState( this.activationKey ) ) {
 
-                if ( intersect ) {
+                if ( intersect && intersect.distance <= this.maxCameraDistance ) {
                     this.addDOMListeners();
                     this.beginPanCamera( intersect.object, intersect.point );
                 }
@@ -193,7 +191,9 @@ class ViewControls extends THREE.Object3D {
         if ( this.camera.position.z > 0 ) {
             this.camera.translateZ( dollyAmount );
         }
-        this.camera.position.z = Math.max( this.minCameraDistance, this.camera.position.z );
+        // this.camera.position.z = Math.max( this.minCameraDistance, this.camera.position.z );
+        this.camera.position.z = THREE.MathUtils.clamp(this.camera.position.z,
+                this.minCameraDistance, this.maxCameraDistance );
     }
 
     handleKeyUp( evt ) {
@@ -209,11 +209,11 @@ class ViewControls extends THREE.Object3D {
     }
 
     panCamera( delta = 0.017 ) {
+
+        // this is not the correct way to slerp
         this.camera.quaternion.slerp( this.focusQuaternion, this.focusIncrement );
         this.focusIncrement += this.focusSpeed * delta;
-        this.focusIterations += 1;
 
-        // if ( this.focusIterations > this.maxFocusIterations ) {
         // slerp to 1.0 takes too long and doesn't make much difference so
         // stop at > 0.5...
         if ( this.focusIncrement > 0.5 ) {
@@ -237,7 +237,6 @@ class ViewControls extends THREE.Object3D {
     beginPanCamera( object, position ) {
         this.focused = false;
         this.focusIncrement = 0;
-        this.focusIterations = 0;
         this.scene.attach( this.camera );
         this.focusMatrix.lookAt( this.camera.position, position, this.camera.up );
         this.focusQuaternion.setFromRotationMatrix( this.focusMatrix );
@@ -247,12 +246,11 @@ class ViewControls extends THREE.Object3D {
     }
 
     resetCamera() {
+
+        // this is not the correct way to lerp or slerp
         this.camera.position.lerp( this.resetPosition, 0.11 );
         this.camera.quaternion.slerp( this.resetQuaternion, 0.055 );
-        this.focusIterations += 1;
 
-        // if ( this.camera.position.manhattanDistanceTo( this.resetPosition ) < this.distanceTolerance ) {
-        // if ( this.focusIterations > this.maxFocusIterations * 10 ) {
         // slerp to 1.0 takes too long and doesn't make much difference so
         // stop at > 0.5...
         if ( this.focusIncrement > 0.5 ) {
@@ -318,7 +316,6 @@ class ViewControls extends THREE.Object3D {
 
     exit() {
         this.focusIncrement = 0;
-        this.focusIterations = 0;
         this.resetParent.attach( this.camera );
         this.resetCamera();
         this.removeDOMListeners();

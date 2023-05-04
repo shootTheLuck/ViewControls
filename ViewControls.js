@@ -185,15 +185,18 @@ class ViewControls extends THREE.Object3D {
     }
 
     dolly( amount ) {
-        const dollyAmount = THREE.MathUtils.clamp( amount * this.camera.position.z,
+        const dollyAmount = THREE.MathUtils.clamp( amount * Math.abs(this.camera.position.z),
                 -this.maxDollySpeed, this.maxDollySpeed );
 
-        if ( this.camera.position.z > 0 ) {
-            this.camera.translateZ( dollyAmount );
-        }
-        // this.camera.position.z = Math.max( this.minCameraDistance, this.camera.position.z );
-        this.camera.position.z = THREE.MathUtils.clamp(this.camera.position.z,
+        this.camera.translateZ( dollyAmount );
+        const sign = Math.sign(this.camera.position.z);
+        if (sign > 0) {
+            this.camera.position.z = THREE.MathUtils.clamp(this.camera.position.z,
                 this.minCameraDistance, this.maxCameraDistance );
+        } else {
+            this.camera.position.z = THREE.MathUtils.clamp(this.camera.position.z,
+                -this.maxCameraDistance, -this.minCameraDistance );
+        }
     }
 
     handleKeyUp( evt ) {

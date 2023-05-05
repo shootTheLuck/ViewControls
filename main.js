@@ -55,7 +55,7 @@ function init() {
         new THREE.PlaneGeometry( 200, 200 ),
         new THREE.MeshStandardMaterial( { map: grassTexture } )
     );
-    floor.rotateX( - Math.PI / 2 );
+    floor.rotateX( -Math.PI / 2 );
     floor.receiveShadow = true;
     scene.add( floor );
 
@@ -73,7 +73,7 @@ function init() {
     scene.add( box1 );
 
     var box2 = box.clone();
-    box2.position.set( - 3, 1, 0 );
+    box2.position.set( -3, 1, 0 );
     scene.add( box2 );
 
     var box3 = box.clone();
@@ -147,7 +147,7 @@ function init() {
 
 function animate() {
     const delta = clock.getDelta();
-    viewControls.update(delta);
+    viewControls.update( delta );
     renderer.render( scene, camera );
     requestAnimationFrame( animate );
 
